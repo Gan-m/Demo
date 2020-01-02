@@ -144,9 +144,7 @@
 <a name="65">表格数量单位表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index unit_PK on unit;<br />
-<br />
-drop table if exists unit;<br />
+<p align="left">drop table if exists unit;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: unit                                                  */<br />
@@ -156,14 +154,6 @@ create table unit<br />
    unitid               int not null,<br />
    unitname             varchar(10),<br />
    primary key (unitid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: unit_PK                                               */<br />
-/*==============================================================*/<br />
-create unique index unit_PK on unit<br />
-(<br />
-   unitid<br />
 );<br />
 
 </p>

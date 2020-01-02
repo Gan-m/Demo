@@ -474,13 +474,7 @@
 <a name="53">表格技工表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 技工星级与技工_FK on artisan;<br />
-<br />
-drop index 班组与技工_FK on artisan;<br />
-<br />
-drop index artisan_PK on artisan;<br />
-<br />
-drop table if exists artisan;<br />
+<p align="left">drop table if exists artisan;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: artisan                                               */<br />
@@ -501,30 +495,6 @@ create table artisan<br />
    craft                varchar(100),<br />
    maintainBrand        varchar(100),<br />
    primary key (artisanid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: artisan_PK                                            */<br />
-/*==============================================================*/<br />
-create unique index artisan_PK on artisan<br />
-(<br />
-   artisanid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 班组与技工_FK                                              */<br />
-/*==============================================================*/<br />
-create index 班组与技工_FK on artisan<br />
-(<br />
-   teamid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 技工星级与技工_FK                                            */<br />
-/*==============================================================*/<br />
-create index 技工星级与技工_FK on artisan<br />
-(<br />
-   starsid<br />
 );<br />
 <br />
 alter table artisan add constraint FK_技工星级与技工 foreign key (starsid)<br />

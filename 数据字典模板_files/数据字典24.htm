@@ -474,15 +474,7 @@
 <a name="89">表格维修表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 车辆品牌与维修单_FK on instation;<br />
-<br />
-drop index 维修状态_FK on instation;<br />
-<br />
-drop index 技工与维修表_FK on instation;<br />
-<br />
-drop index instation_PK on instation;<br />
-<br />
-drop table if exists instation;<br />
+<p align="left">drop table if exists instation;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: instation                                             */<br />
@@ -503,38 +495,6 @@ create table instation<br />
    iszn                 bool,<br />
    ifjs                 bool,<br />
    primary key (insid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: instation_PK                                          */<br />
-/*==============================================================*/<br />
-create unique index instation_PK on instation<br />
-(<br />
-   insid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 技工与维修表_FK                                             */<br />
-/*==============================================================*/<br />
-create index 技工与维修表_FK on instation<br />
-(<br />
-   artisanid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 维修状态_FK                                               */<br />
-/*==============================================================*/<br />
-create index 维修状态_FK on instation<br />
-(<br />
-   wxstateid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 车辆品牌与维修单_FK                                           */<br />
-/*==============================================================*/<br />
-create index 车辆品牌与维修单_FK on instation<br />
-(<br />
-   ctsid<br />
 );<br />
 <br />
 alter table instation add constraint FK_技工与维修表 foreign key (artisanid)<br />

@@ -234,13 +234,7 @@
 <a name="101">表格车型表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 车辆品牌与车型_FK on modeltype;<br />
-<br />
-drop index 发动机与车型_FK on modeltype;<br />
-<br />
-drop index modeltype_PK on modeltype;<br />
-<br />
-drop table if exists modeltype;<br />
+<p align="left">drop table if exists modeltype;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: modeltype                                             */<br />
@@ -253,30 +247,6 @@ create table modeltype<br />
    cartypename          varchar(50),<br />
    ckprice              float(10),<br />
    primary key (cartypeid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: modeltype_PK                                          */<br />
-/*==============================================================*/<br />
-create unique index modeltype_PK on modeltype<br />
-(<br />
-   cartypeid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 发动机与车型_FK                                             */<br />
-/*==============================================================*/<br />
-create index 发动机与车型_FK on modeltype<br />
-(<br />
-   engineid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 车辆品牌与车型_FK                                            */<br />
-/*==============================================================*/<br />
-create index 车辆品牌与车型_FK on modeltype<br />
-(<br />
-   ctsid<br />
 );<br />
 <br />
 alter table modeltype add constraint FK_发动机与车型 foreign key (engineid)<br />

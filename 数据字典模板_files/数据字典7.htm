@@ -144,9 +144,7 @@
 <a name="21">表格发动机品牌表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index engine_PK on engine;<br />
-<br />
-drop table if exists engine;<br />
+<p align="left">drop table if exists engine;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: engine                                                */<br />
@@ -156,14 +154,6 @@ create table engine<br />
    engineid             int not null,<br />
    enginename           varchar(50),<br />
    primary key (engineid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: engine_PK                                             */<br />
-/*==============================================================*/<br />
-create unique index engine_PK on engine<br />
-(<br />
-   engineid<br />
 );<br />
 
 </p>

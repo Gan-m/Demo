@@ -204,9 +204,7 @@
 <a name="113">表格门店表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index store_PK on store;<br />
-<br />
-drop table if exists store;<br />
+<p align="left">drop table if exists store;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: store                                                 */<br />
@@ -218,14 +216,6 @@ create table store<br />
    clicity              varchar(20),<br />
    storeaddress         varchar(100),<br />
    primary key (storeid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: store_PK                                              */<br />
-/*==============================================================*/<br />
-create unique index store_PK on store<br />
-(<br />
-   storeid<br />
 );<br />
 
 </p>

@@ -144,9 +144,7 @@
 <a name="69">表格状态表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index state_PK on state;<br />
-<br />
-drop table if exists state;<br />
+<p align="left">drop table if exists state;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: state                                                 */<br />
@@ -156,14 +154,6 @@ create table state<br />
    stateid              int not null,<br />
    statename            varchar(50),<br />
    primary key (stateid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: state_PK                                              */<br />
-/*==============================================================*/<br />
-create unique index state_PK on state<br />
-(<br />
-   stateid<br />
 );<br />
 
 </p>

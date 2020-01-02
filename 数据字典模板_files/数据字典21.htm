@@ -234,13 +234,7 @@
 <a name="77">表格离职表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 职位与离职_FK on dimission;<br />
-<br />
-drop index 员工与离职_FK on dimission;<br />
-<br />
-drop index dimission_PK on dimission;<br />
-<br />
-drop table if exists dimission;<br />
+<p align="left">drop table if exists dimission;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: dimission                                             */<br />
@@ -253,30 +247,6 @@ create table dimission<br />
    dimtimes             date,<br />
    dimreasona           varchar(100),<br />
    primary key (dimissionid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: dimission_PK                                          */<br />
-/*==============================================================*/<br />
-create unique index dimission_PK on dimission<br />
-(<br />
-   dimissionid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 员工与离职_FK                                              */<br />
-/*==============================================================*/<br />
-create index 员工与离职_FK on dimission<br />
-(<br />
-   employeeid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 职位与离职_FK                                              */<br />
-/*==============================================================*/<br />
-create index 职位与离职_FK on dimission<br />
-(<br />
-   departmentid<br />
 );<br />
 <br />
 alter table dimission add constraint FK_员工与离职 foreign key (employeeid)<br />

@@ -294,11 +294,7 @@
 <a name="57">表格收银表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 收银与维修_FK on cashiers;<br />
-<br />
-drop index cashiers_PK on cashiers;<br />
-<br />
-drop table if exists cashiers;<br />
+<p align="left">drop table if exists cashiers;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: cashiers                                              */<br />
@@ -313,22 +309,6 @@ create table cashiers<br />
    jfdk                 float(10),<br />
    cashierstimes        date,<br />
    primary key (casid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: cashiers_PK                                           */<br />
-/*==============================================================*/<br />
-create unique index cashiers_PK on cashiers<br />
-(<br />
-   casid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 收银与维修_FK                                              */<br />
-/*==============================================================*/<br />
-create index 收银与维修_FK on cashiers<br />
-(<br />
-   insid<br />
 );<br />
 <br />
 alter table cashiers add constraint FK_收银与维修 foreign key (insid)<br />

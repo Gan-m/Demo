@@ -144,9 +144,7 @@
 <a name="49">表格技工星级表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index stars_PK on stars;<br />
-<br />
-drop table if exists stars;<br />
+<p align="left">drop table if exists stars;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: stars                                                 */<br />
@@ -156,14 +154,6 @@ create table stars<br />
    starsid              int not null,<br />
    starsname            varchar(50),<br />
    primary key (starsid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: stars_PK                                              */<br />
-/*==============================================================*/<br />
-create unique index stars_PK on stars<br />
-(<br />
-   starsid<br />
 );<br />
 
 </p>

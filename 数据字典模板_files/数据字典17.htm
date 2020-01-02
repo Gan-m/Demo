@@ -384,13 +384,7 @@
 <a name="61">表格救援接车的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 站外接车班组_FK on jyjc;<br />
-<br />
-drop index 站外维修_FK on jyjc;<br />
-<br />
-drop index jyjc_PK on jyjc;<br />
-<br />
-drop table if exists jyjc;<br />
+<p align="left">drop table if exists jyjc;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: jyjc                                                  */<br />
@@ -408,30 +402,6 @@ create table jyjc<br />
    doaddress            varchar(50),<br />
    overtime             date,<br />
    primary key (jyid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: jyjc_PK                                               */<br />
-/*==============================================================*/<br />
-create unique index jyjc_PK on jyjc<br />
-(<br />
-   jyid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 站外维修_FK                                               */<br />
-/*==============================================================*/<br />
-create index 站外维修_FK on jyjc<br />
-(<br />
-   insid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 站外接车班组_FK                                             */<br />
-/*==============================================================*/<br />
-create index 站外接车班组_FK on jyjc<br />
-(<br />
-   teamid<br />
 );<br />
 <br />
 alter table jyjc add constraint FK_站外接车班组 foreign key (teamid)<br />

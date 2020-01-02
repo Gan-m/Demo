@@ -264,13 +264,7 @@
 <a name="81">表格维修单详情的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 维修单维修项目_FK on wxxqd;<br />
-<br />
-drop index 维修的项目_FK on wxxqd;<br />
-<br />
-drop index wxxqd_PK on wxxqd;<br />
-<br />
-drop table if exists wxxqd;<br />
+<p align="left">drop table if exists wxxqd;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: wxxqd                                                 */<br />
@@ -284,30 +278,6 @@ create table wxxqd<br />
    couponmoney          float(10),<br />
    datepmoney           float(10),<br />
    primary key (wxqid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: wxxqd_PK                                              */<br />
-/*==============================================================*/<br />
-create unique index wxxqd_PK on wxxqd<br />
-(<br />
-   wxqid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 维修的项目_FK                                              */<br />
-/*==============================================================*/<br />
-create index 维修的项目_FK on wxxqd<br />
-(<br />
-   rid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 维修单维修项目_FK                                            */<br />
-/*==============================================================*/<br />
-create index 维修单维修项目_FK on wxxqd<br />
-(<br />
-   insid<br />
 );<br />
 <br />
 alter table wxxqd add constraint FK_维修单维修项目 foreign key (insid)<br />

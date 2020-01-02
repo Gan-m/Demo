@@ -264,11 +264,7 @@
 <a name="37">表格外勤车辆表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 班组与车辆_FK on workcars;<br />
-<br />
-drop index workcars_PK on workcars;<br />
-<br />
-drop table if exists workcars;<br />
+<p align="left">drop table if exists workcars;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: workcars                                              */<br />
@@ -282,22 +278,6 @@ create table workcars<br />
    carType              varchar(50),<br />
    clic                 int,<br />
    primary key (wid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: workcars_PK                                           */<br />
-/*==============================================================*/<br />
-create unique index workcars_PK on workcars<br />
-(<br />
-   wid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 班组与车辆_FK                                              */<br />
-/*==============================================================*/<br />
-create index 班组与车辆_FK on workcars<br />
-(<br />
-   teamid<br />
 );<br />
 <br />
 alter table workcars add constraint FK_班组与车辆 foreign key (teamid)<br />

@@ -144,9 +144,7 @@
 <a name="109">表格部门表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index department_PK on department;<br />
-<br />
-drop table if exists department;<br />
+<p align="left">drop table if exists department;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: department                                            */<br />
@@ -156,14 +154,6 @@ create table department<br />
    departmentid         int not null,<br />
    depnames             varchar(50),<br />
    primary key (departmentid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: department_PK                                         */<br />
-/*==============================================================*/<br />
-create unique index department_PK on department<br />
-(<br />
-   departmentid<br />
 );<br />
 
 </p>

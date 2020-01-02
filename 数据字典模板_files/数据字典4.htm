@@ -204,9 +204,7 @@
 <a name="9">表格会员表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index member_PK on member;<br />
-<br />
-drop table if exists member;<br />
+<p align="left">drop table if exists member;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: member                                                */<br />
@@ -218,14 +216,6 @@ create table member<br />
    baifb                float(10),<br />
    memberjfcount        float(10),<br />
    primary key (mid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: member_PK                                             */<br />
-/*==============================================================*/<br />
-create unique index member_PK on member<br />
-(<br />
-   mid<br />
 );<br />
 
 </p>

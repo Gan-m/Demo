@@ -354,13 +354,7 @@
 <a name="45">表格客户车辆表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 客户车辆品牌_FK on clientcar;<br />
-<br />
-drop index 车辆与客户关系_FK on clientcar;<br />
-<br />
-drop index clientcar_PK on clientcar;<br />
-<br />
-drop table if exists clientcar;<br />
+<p align="left">drop table if exists clientcar;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: clientcar                                             */<br />
@@ -377,30 +371,6 @@ create table clientcar<br />
    purchasetime         date,<br />
    jctime               date,<br />
    primary key (cno)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: clientcar_PK                                          */<br />
-/*==============================================================*/<br />
-create unique index clientcar_PK on clientcar<br />
-(<br />
-   cno<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 车辆与客户关系_FK                                            */<br />
-/*==============================================================*/<br />
-create index 车辆与客户关系_FK on clientcar<br />
-(<br />
-   clientno<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 客户车辆品牌_FK                                             */<br />
-/*==============================================================*/<br />
-create index 客户车辆品牌_FK on clientcar<br />
-(<br />
-   ctsid<br />
 );<br />
 <br />
 alter table clientcar add constraint FK_客户车辆品牌 foreign key (ctsid)<br />

@@ -174,9 +174,7 @@
 <a name="105">表格车辆品牌表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index cartypes_PK on cartypes;<br />
-<br />
-drop table if exists cartypes;<br />
+<p align="left">drop table if exists cartypes;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: cartypes                                              */<br />
@@ -187,14 +185,6 @@ create table cartypes<br />
    ctsnames             varchar(50),<br />
    cartypeszm           varchar(10),<br />
    primary key (ctsid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: cartypes_PK                                           */<br />
-/*==============================================================*/<br />
-create unique index cartypes_PK on cartypes<br />
-(<br />
-   ctsid<br />
 );<br />
 
 </p>

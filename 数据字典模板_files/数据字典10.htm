@@ -534,19 +534,7 @@
 <a name="33">表格商品表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 供货与商品_FK on shop;<br />
-<br />
-drop index 商品与数量单位_FK on shop;<br />
-<br />
-drop index 商品与类型_FK on shop;<br />
-<br />
-drop index 商品与门店_FK on shop;<br />
-<br />
-drop index 商品与状态_FK on shop;<br />
-<br />
-drop index shop_PK on shop;<br />
-<br />
-drop table if exists shop;<br />
+<p align="left">drop table if exists shop;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: shop                                                  */<br />
@@ -569,54 +557,6 @@ create table shop<br />
    vipmoney             float(10),<br />
    rxyprice             float(10),<br />
    primary key (shopid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: shop_PK                                               */<br />
-/*==============================================================*/<br />
-create unique index shop_PK on shop<br />
-(<br />
-   shopid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 商品与状态_FK                                              */<br />
-/*==============================================================*/<br />
-create index 商品与状态_FK on shop<br />
-(<br />
-   stateid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 商品与门店_FK                                              */<br />
-/*==============================================================*/<br />
-create index 商品与门店_FK on shop<br />
-(<br />
-   storeid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 商品与类型_FK                                              */<br />
-/*==============================================================*/<br />
-create index 商品与类型_FK on shop<br />
-(<br />
-   gid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 商品与数量单位_FK                                            */<br />
-/*==============================================================*/<br />
-create index 商品与数量单位_FK on shop<br />
-(<br />
-   unitid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 供货与商品_FK                                              */<br />
-/*==============================================================*/<br />
-create index 供货与商品_FK on shop<br />
-(<br />
-   firmno<br />
 );<br />
 <br />
 alter table shop add constraint FK_供货与商品 foreign key (firmno)<br />

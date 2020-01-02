@@ -414,13 +414,7 @@
 <a name="41">表格客户表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 服务顾问_FK on client;<br />
-<br />
-drop index hykf_FK on client;<br />
-<br />
-drop index client_PK on client;<br />
-<br />
-drop table if exists client;<br />
+<p align="left">drop table if exists client;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: client                                                */<br />
@@ -439,30 +433,6 @@ create table client<br />
    county               varchar(20),<br />
    khbz                 varchar(100),<br />
    primary key (clientno)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: client_PK                                             */<br />
-/*==============================================================*/<br />
-create unique index client_PK on client<br />
-(<br />
-   clientno<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: hykf_FK                                               */<br />
-/*==============================================================*/<br />
-create index hykf_FK on client<br />
-(<br />
-   mid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 服务顾问_FK                                               */<br />
-/*==============================================================*/<br />
-create index 服务顾问_FK on client<br />
-(<br />
-   artisanid<br />
 );<br />
 <br />
 alter table client add constraint FK_hykf foreign key (mid)<br />

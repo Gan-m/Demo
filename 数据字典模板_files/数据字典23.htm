@@ -144,9 +144,7 @@
 <a name="85">表格维修状态的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index wxstate_PK on wxstate;<br />
-<br />
-drop table if exists wxstate;<br />
+<p align="left">drop table if exists wxstate;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: wxstate                                               */<br />
@@ -156,14 +154,6 @@ create table wxstate<br />
    wxstateid            int not null,<br />
    wxstatename          varchar(50),<br />
    primary key (wxstateid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: wxstate_PK                                            */<br />
-/*==============================================================*/<br />
-create unique index wxstate_PK on wxstate<br />
-(<br />
-   wxstateid<br />
 );<br />
 
 </p>

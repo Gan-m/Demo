@@ -354,9 +354,7 @@
 <a name="93">表格维修项目表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index Repair_PK on Repair;<br />
-<br />
-drop table if exists Repair;<br />
+<p align="left">drop table if exists Repair;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: Repair                                                */<br />
@@ -373,14 +371,6 @@ create table Repair<br />
    rvipmoney            float(10),<br />
    repxyperice          float(10),<br />
    primary key (rid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: Repair_PK                                             */<br />
-/*==============================================================*/<br />
-create unique index Repair_PK on Repair<br />
-(<br />
-   rid<br />
 );<br />
 
 </p>

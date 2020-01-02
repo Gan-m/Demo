@@ -174,9 +174,7 @@
 <a name="29">表格商品类型表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index goodsType_PK on goodsType;<br />
-<br />
-drop table if exists goodsType;<br />
+<p align="left">drop table if exists goodsType;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: goodsType                                             */<br />
@@ -187,14 +185,6 @@ create table goodsType<br />
    gname                varchar(50),<br />
    fatherType           int,<br />
    primary key (gid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: goodsType_PK                                          */<br />
-/*==============================================================*/<br />
-create unique index goodsType_PK on goodsType<br />
-(<br />
-   gid<br />
 );<br />
 
 </p>

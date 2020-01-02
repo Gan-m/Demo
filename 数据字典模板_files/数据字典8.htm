@@ -744,17 +744,7 @@
 <a name="25">表格员工表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 状态与员工_FK on employee;<br />
-<br />
-drop index 计薪和员工_FK on employee;<br />
-<br />
-drop index 部门与员工_FK on employee;<br />
-<br />
-drop index 门店与人员_FK on employee;<br />
-<br />
-drop index employee_PK on employee;<br />
-<br />
-drop table if exists employee;<br />
+<p align="left">drop table if exists employee;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: employee                                              */<br />
@@ -784,46 +774,6 @@ create table employee<br />
    lztimes              date,<br />
    brithtimes           date,<br />
    primary key (employeeid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: employee_PK                                           */<br />
-/*==============================================================*/<br />
-create unique index employee_PK on employee<br />
-(<br />
-   employeeid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 门店与人员_FK                                              */<br />
-/*==============================================================*/<br />
-create index 门店与人员_FK on employee<br />
-(<br />
-   storeid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 部门与员工_FK                                              */<br />
-/*==============================================================*/<br />
-create index 部门与员工_FK on employee<br />
-(<br />
-   departmentid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 计薪和员工_FK                                              */<br />
-/*==============================================================*/<br />
-create index 计薪和员工_FK on employee<br />
-(<br />
-   propertyid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 状态与员工_FK                                              */<br />
-/*==============================================================*/<br />
-create index 状态与员工_FK on employee<br />
-(<br />
-   stateid<br />
 );<br />
 <br />
 alter table employee add constraint FK_状态与员工 foreign key (stateid)<br />

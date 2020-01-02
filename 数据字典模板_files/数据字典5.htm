@@ -264,13 +264,7 @@
 <a name="13">表格会员记录表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 客户与会员记录_FK on viplist;<br />
-<br />
-drop index 会员与会员等级关系_FK on viplist;<br />
-<br />
-drop index viplist_PK on viplist;<br />
-<br />
-drop table if exists viplist;<br />
+<p align="left">drop table if exists viplist;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: viplist                                               */<br />
@@ -284,30 +278,6 @@ create table viplist<br />
    jiontime             date,<br />
    sumjf                float(10),<br />
    primary key (id)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: viplist_PK                                            */<br />
-/*==============================================================*/<br />
-create unique index viplist_PK on viplist<br />
-(<br />
-   id<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 会员与会员等级关系_FK                                          */<br />
-/*==============================================================*/<br />
-create index 会员与会员等级关系_FK on viplist<br />
-(<br />
-   mid<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: 客户与会员记录_FK                                            */<br />
-/*==============================================================*/<br />
-create index 客户与会员记录_FK on viplist<br />
-(<br />
-   clientno<br />
 );<br />
 <br />
 alter table viplist add constraint FK_会员与会员等级关系 foreign key (mid)<br />

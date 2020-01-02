@@ -384,9 +384,7 @@
 <a name="17">表格供货单位表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index firm_PK on firm;<br />
-<br />
-drop table if exists firm;<br />
+<p align="left">drop table if exists firm;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: firm                                                  */<br />
@@ -404,14 +402,6 @@ create table firm<br />
    scity                varchar(20),<br />
    firmsevenst          varchar(100),<br />
    primary key (firmno)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: firm_PK                                               */<br />
-/*==============================================================*/<br />
-create unique index firm_PK on firm<br />
-(<br />
-   firmno<br />
 );<br />
 
 </p>

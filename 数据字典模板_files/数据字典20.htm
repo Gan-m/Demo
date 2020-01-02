@@ -174,9 +174,7 @@
 <a name="73">表格班组表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index team_PK on team;<br />
-<br />
-drop table if exists team;<br />
+<p align="left">drop table if exists team;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: team                                                  */<br />
@@ -187,14 +185,6 @@ create table team<br />
    teamname             varchar(50),<br />
    fteamid              int,<br />
    primary key (teamid)<br />
-);<br />
-<br />
-/*==============================================================*/<br />
-/* Index: team_PK                                               */<br />
-/*==============================================================*/<br />
-create unique index team_PK on team<br />
-(<br />
-   teamid<br />
 );<br />
 
 </p>
