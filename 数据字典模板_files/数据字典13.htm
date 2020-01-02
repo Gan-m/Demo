@@ -141,11 +141,11 @@
 </tr>
 <tr>
 <td>
-<p align="left">客户车辆品牌
+<p align="left">车辆品牌id
 </p>
 </td>
 <td>
-<p align="left">客户车辆品牌
+<p align="left">ctsid
 </p>
 </td>
 <td>
@@ -157,7 +157,7 @@
 </p>
 </td>
 <td>
-<p align="left">FALSE
+<p align="left">TRUE
 </p>
 </td>
 <td>
@@ -261,120 +261,90 @@
 </tr>
 <tr>
 <td>
-<p align="left">员工id
-</p>
-</td>
-<td>
-<p align="left">emploid
-</p>
-</td>
-<td>
-<p align="left">varchar(50)
-</p>
-</td>
-<td>
-<p align="left">FALSE
-</p>
-</td>
-<td>
-<p align="left">FALSE
-</p>
-</td>
-<td>
-<p align="left">FALSE
-</p>
-</td>
-<td>
-<p align="left">&nbsp; 
-</p>
-</td>
-</tr>
-<tr>
-<td class="TD2">
 <p align="left">客户车辆里程
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">clicang
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">int
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">FALSE
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">FALSE
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">FALSE
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">&nbsp; 
 </p>
 </td>
 </tr>
 <tr>
-<td>
+<td class="TD2">
 <p align="left">购买日期
 </p>
 </td>
-<td>
+<td class="TD2">
 <p align="left">purchasetime
 </p>
 </td>
-<td>
+<td class="TD2">
 <p align="left">date
 </p>
 </td>
-<td>
+<td class="TD2">
 <p align="left">FALSE
 </p>
 </td>
-<td>
+<td class="TD2">
 <p align="left">FALSE
 </p>
 </td>
-<td>
+<td class="TD2">
 <p align="left">FALSE
 </p>
 </td>
-<td>
+<td class="TD2">
 <p align="left">&nbsp; 
 </p>
 </td>
 </tr>
 <tr>
-<td class="TD2">
+<td>
 <p align="left">客户车辆进厂日期
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">jctime
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">date
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">FALSE
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">FALSE
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">FALSE
 </p>
 </td>
-<td class="TD2">
+<td>
 <p align="left">&nbsp; 
 </p>
 </td>
@@ -384,7 +354,9 @@
 <a name="45">表格客户车辆表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop index 车辆与客户关系_FK on clientcar;<br />
+<p align="left">drop index 客户车辆品牌_FK on clientcar;<br />
+<br />
+drop index 车辆与客户关系_FK on clientcar;<br />
 <br />
 drop index clientcar_PK on clientcar;<br />
 <br />
@@ -397,11 +369,10 @@ create table clientcar<br />
 (<br />
    cno                  varchar(20) not null,<br />
    clientno             varchar(50),<br />
-   客户车辆品牌               int,<br />
+   ctsid                int,<br />
    driver               varchar(50),<br />
    driverphone          varchar(20),<br />
    driverbirth          date,<br />
-   emploid              varchar(50),<br />
    clicang              int,<br />
    purchasetime         date,<br />
    jctime               date,<br />
@@ -423,6 +394,17 @@ create index 车辆与客户关系_FK on clientcar<br />
 (<br />
    clientno<br />
 );<br />
+<br />
+/*==============================================================*/<br />
+/* Index: 客户车辆品牌_FK                                             */<br />
+/*==============================================================*/<br />
+create index 客户车辆品牌_FK on clientcar<br />
+(<br />
+   ctsid<br />
+);<br />
+<br />
+alter table clientcar add constraint FK_客户车辆品牌 foreign key (ctsid)<br />
+      references cartypes (ctsid) on delete restrict on update restrict;<br />
 <br />
 alter table clientcar add constraint FK_车辆与客户关系 foreign key (clientno)<br />
       references client (clientno) on delete restrict on update restrict;<br />

@@ -81,27 +81,27 @@
 </tr>
 <tr>
 <td>
-<p align="left">城市id
+<p align="left">厂商编号
 </p>
 </td>
 <td>
-<p align="left">cityid
+<p align="left">firmno
 </p>
 </td>
 <td>
-<p align="left">int
+<p align="left">varchar(10)
 </p>
 </td>
 <td>
-<p align="left">FALSE
-</p>
-</td>
-<td>
-<p align="left">FALSE
+<p align="left">TRUE
 </p>
 </td>
 <td>
 <p align="left">FALSE
+</p>
+</td>
+<td>
+<p align="left">TRUE
 </p>
 </td>
 <td>
@@ -111,15 +111,15 @@
 </tr>
 <tr>
 <td class="TD2">
-<p align="left">厂商编号
+<p align="left">城市id
 </p>
 </td>
 <td class="TD2">
-<p align="left">firmno
+<p align="left">cityid
 </p>
 </td>
 <td class="TD2">
-<p align="left">varchar(10)
+<p align="left">int
 </p>
 </td>
 <td class="TD2">
@@ -351,7 +351,7 @@
 </tr>
 <tr>
 <td class="TD2">
-<p align="left">供货单
+<p align="left">供货备注
 </p>
 </td>
 <td class="TD2">
@@ -384,15 +384,17 @@
 <a name="17">表格供货单位表的代码预览</a> 
 </h3>
 <table class="Text" border="1" cellpadding="3" cellspacing="1" width="100%"><tr><td>
-<p align="left">drop table if exists firm;<br />
+<p align="left">drop index firm_PK on firm;<br />
+<br />
+drop table if exists firm;<br />
 <br />
 /*==============================================================*/<br />
 /* Table: firm                                                  */<br />
 /*==============================================================*/<br />
 create table firm<br />
 (<br />
+   firmno               varchar(10) not null,<br />
    cityid               int,<br />
-   firmno               varchar(10),<br />
    firmname             varchar(10),<br />
    firmaddress          varchar(50),<br />
    url                  varchar(20),<br />
@@ -400,7 +402,16 @@ create table firm<br />
    lxr                  varchar(20),<br />
    lxrphone             varchar(20),<br />
    scity                varchar(20),<br />
-   firmsevenst          varchar(100)<br />
+   firmsevenst          varchar(100),<br />
+   primary key (firmno)<br />
+);<br />
+<br />
+/*==============================================================*/<br />
+/* Index: firm_PK                                               */<br />
+/*==============================================================*/<br />
+create unique index firm_PK on firm<br />
+(<br />
+   firmno<br />
 );<br />
 
 </p>

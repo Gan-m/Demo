@@ -115,7 +115,7 @@
 </p>
 </td>
 <td class="TD2">
-<p align="left">会员等级名称
+<p align="left">membername
 </p>
 </td>
 <td class="TD2">
@@ -169,6 +169,36 @@
 </p>
 </td>
 </tr>
+<tr>
+<td class="TD2">
+<p align="left">多少积分改等级
+</p>
+</td>
+<td class="TD2">
+<p align="left">memberjfcount
+</p>
+</td>
+<td class="TD2">
+<p align="left">float(10)
+</p>
+</td>
+<td class="TD2">
+<p align="left">FALSE
+</p>
+</td>
+<td class="TD2">
+<p align="left">FALSE
+</p>
+</td>
+<td class="TD2">
+<p align="left">FALSE
+</p>
+</td>
+<td class="TD2">
+<p align="left">&nbsp; 
+</p>
+</td>
+</tr>
 </table><br />
 <h3>
 <a name="9">表格会员表的代码预览</a> 
@@ -184,8 +214,9 @@ drop table if exists member;<br />
 create table member<br />
 (<br />
    mid                  int not null,<br />
-   会员等级名称               varchar(20),<br />
+   membername           varchar(20),<br />
    baifb                float(10),<br />
+   memberjfcount        float(10),<br />
    primary key (mid)<br />
 );<br />
 <br />
