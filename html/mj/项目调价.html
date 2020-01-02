@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+	<style type="text/css">
+		body{
+			margin:0 auto;
+			width: 500px;
+			padding-top: 30px;
+		}
+		.form-control{
+			display: inline-block;
+			width: 220px;
+		}
+		.btn{
+			margin-left: 20px;
+		}
+	</style>
+	<body>
+		<select class="form-control" style="width: 100px;">
+			<option>自费</option>
+		</select>
+		<span style="color: green;margin-left: 10px;">=标准价*</span>
+		<input type="text" v-model="name" class="form-control" style="margin-left: 10px;" id="exampleInputEmail2" placeholder="匹配编码/名称/名称简码">
+		<button class="btn btn-default">保存</button>
+	</body>
+	<script src="../../js/jquery-1.12.4.js" type="text/javascript"></script>
+	<script src="../../js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../layui/layui.js" type="text/javascript"></script>
+	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+</html>
