@@ -144,10 +144,10 @@
 		<h1 class="row text-center" style="color: orange;"><img src="img/logo.gif" style="width: 300px;height: 100px;">德召文汽修登录</h1>
 		<div class="row" style="margin-top: 100px;">
 			<div class="col-md-offset-3 col-md-6">
-				<form class="form-horizontal" action="index.html">
+				<form class="form-horizontal">
 					<span class="heading">用户登录</span>
 					<div class="form-group">
-						<input type="email" class="form-control" id="inputEmail3" placeholder="电子邮件">
+						<input type="text" class="form-control" id="inputEmail3" placeholder="登录账号">
 						<i class="fa fa-user"></i>
 					</div>
 					<div class="form-group help">
@@ -161,7 +161,7 @@
 							<label for="checkbox1"></label>
 						</div>
 						<span class="text">记住我</span>
-						<button type="submit" class="btn btn-default">立刻登录</button>
+						<button type="button" class="btn btn-default" onclick="login()">立刻登录</button>
 					</div>
 				</form>
 			</div>
@@ -170,4 +170,26 @@
 </div>
 </div>
 </body>
+<script src="js/jquery-1.12.4.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/jq_ajax_config.js"></script>
+<script>
+	function login(){
+		let eid=$("#inputEmail3").val();
+		let epaw=$("#inputPassword3").val();
+		if(eid=="" || epaw==""){
+			alert("所有框不能为空！");
+			return;
+		}else{
+			$.getJSON("http://127.0.0.1:8080/api/employee",{"eid":eid,"epaw":epaw},function(data){
+				if (data.code=="200") {
+					alert("登录成功！");
+					location.href="index.html";
+				} else{
+					alert("账号或密码输入错误！");
+				}
+			})
+		}
+	}
+</script>
 </html>
