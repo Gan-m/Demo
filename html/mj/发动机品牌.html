@@ -63,8 +63,7 @@
 			el: "#fdj",
 			data: {
 				engine: [],
-				engineName: "",
-				nos: [],
+				engineName: ""
 			},
 			methods: {
 				getEegine() {
@@ -105,17 +104,19 @@
 					});
 				},
 				remove() {
+					let nos=[];
 					let checks = $("[name=selOne]");
 					let _this = this;
-					if (confirm("确认删除吗？")) {
-						for (var i = 0; i < checks.length; i++) {
-							if ($("[name=selOne]").eq(i).prop("checked")) {
-								this.nos.push($("[name=selOne]").eq(i).attr("no"));
-							}
+					for (var i = 0; i < checks.length; i++) {
+						if (checks.eq(i).prop("checked")) {
+							nos.push(checks.eq(i).attr("no"));
+							checks.eq(i).prop("checked",false);
 						}
+					}
+					if (confirm("确认删除吗？")) {
 						jQuery.ajax(`http://127.0.0.1:8080/api/engines/delete`, {
 							type: 'post',
-							data: JSON.stringify(_this.nos),
+							data: JSON.stringify(nos),
 							contentType: "application/json",
 							success(data) {
 								if (data.code == "200") {
