@@ -12,18 +12,18 @@
 					<div class="col-md-2">
 						<h4>技工星级</h4>
 					</div>
-					<div class=" col-md-1  col-md-offset-9" style="margin-top: 2px;">
-						<button type="button" style="background-color: #868E96; color: white; border: 1px solid #868E96;" class="btn btn-default col-md-offset-7">关闭</button>
-					</div>
+
 				</div>
 			</div>
 
 			<div class="row" style="padding-top: 20px; ">
 				<div class="col-md-12 ">
-					<div class="col-md-3" style="display: inline;"><span>等级编码:</span><input type="text" name="id" class="form-control" v-model="updateStars.starsid" style="width:70%;display: inline;" /></div>
-					<div class="col-md-3" style="display: inline;">等级名称:<input type="text" class="form-control" name="name" v-model="updateStars.starsname" style="width:70%;display: inline;" /></div>
-					<div class="col-md-3" style="display: inline;">等级权重:<input type="text" class="form-control" name="prices" v-model="updateStars.starsprices" style="width:70%;display: inline;" /></div>
-					<button type="button" @click="add" class="btn btn-default cz-btn col-md-offset-0" type="update"><span class="glyphicon glyphicon-remove"></span>&nbsp;新增</button>
+					<!-- <div class="col-md-3" style="display: inline;"><span>等级编码:</span><input type="text" name="id" class="form-control" v-model="updateStars.starsid" style="width:70%;display: inline;" /></div> -->
+					<div class="col-md-3" style="display: inline;">等级名称:<input type="text" class="form-control" name="name" v-model="updateStars.starsname"
+						 style="width:70%;display: inline;" /></div>
+					<div class="col-md-3" style="display: inline;">工/时:<input type="text" class="form-control" name="prices" v-model="updateStars.starsprices"
+						 style="width:70%;display: inline;" /></div>
+					<button type="button" @click="add" class="btn btn-default cz-btn col-md-offset-3" type="update"><span class="glyphicon glyphicon-remove"></span>&nbsp;新增</button>
 					<button type="button" @click="upd" class="btn btn-default cz-btn" type="update"><span class="glyphicon glyphicon-remove"></span>&nbsp;修改</button>
 					<button type="button" @click="dele" class="btn btn-default cz-btn" ty="remove"><span class="glyphicon glyphicon-cog"></span>&nbsp;删除</button>
 				</div>
@@ -35,7 +35,7 @@
 					<tr>
 						<td>等级编号</td>
 						<td>等级名称</td>
-						<td>等级权重</td>
+						<td>工/时</td>
 						<td>操作</td>
 					</tr>
 					<template v-for="(temp) in Stars">
@@ -43,7 +43,7 @@
 							<td @click="update(temp.starsid)">{{temp.starsid}}</td>
 							<td>{{temp.starsname}}</td>
 							<td>{{temp.starsprices}}</td>
-							<td><input  type="checkbox" :value="temp.starsid" v-model="sz" name="kk" class="checkBtn"></td>
+							<td><input type="checkbox" :value="temp.starsid" v-model="sz" name="kk" class="checkBtn"></td>
 						</tr>
 					</template>
 				</table>
@@ -77,8 +77,8 @@
 					starsname: "",
 					starsprices: ""
 				},
-				sz:[],
-				updateStars:{}
+				sz: [],
+				updateStars: {}
 			},
 			created: function() {
 				this.query()
@@ -101,10 +101,7 @@
 					_this.addStars.starsid = $("[name=id]").val();
 					_this.addStars.starsname = $("[name=name]").val();
 					_this.addStars.starsprices = $("[name=prices]").val();
-					
-					if ($("[name=id]").val() == "") {
-						showAlertDialog("等级编号未填写")
-					} else if ($("[name=name]").val() == "") {
+					if ($("[name=name]").val() == "") {
 						showAlertDialog("等级名称未填写")
 					} else if ($("[name=prices]").val() == "") {
 						showAlertDialog("等级权重未填写")
@@ -115,18 +112,20 @@
 							contentType: "application/json", //非常重要
 							data: JSON.stringify(_this.addStars),
 							success: function(data) {
-								if(data.code=="200"){
+								if (data.code == "200") {
 									showAlertDialog("新增成功");
+									_this.updateStars = "";
 									_this.query();
-								}else{
-									showAlertDialog("新增失败，重复编号")
+
+								} else {
+									showAlertDialog("新增失败，有此等级名称")
 								}
 							}
 						})
 					}
 				},
 				dele() {
-					
+
 					let _this = this;
 					jQuery.ajax('http://127.0.0.1:8080/api/xj/del', {
 						type: "post",
@@ -134,15 +133,16 @@
 						contentType: "application/json", //非常重要
 						data: JSON.stringify(_this.sz),
 						success: function(data) {
-							if(data.code=="200"){
+							if (data.code == "200") {
 								showAlertDialog("删除成功");
 								_this.query();
-							}else{
+							} else {
 								showAlertDialog("删除失败")
 							}
 						}
 					})
-				},update(id){
+				},
+				update(id) {
 					let _this = this;
 					jQuery.ajax('http://127.0.0.1:8080/api/xj/queryByid', {
 						type: "post",
@@ -153,25 +153,31 @@
 							_this.updateStars = data;
 						}
 					})
-					
+
 				},
-				upd(){
+				upd() {
 					let _this = this;
-					jQuery.ajax('http://127.0.0.1:8080/api/xj/upd', {
-						type: "post",
-						dataType: "json",
-						contentType: "application/json", //非常重要
-						data: JSON.stringify(_this.updateStars),
-						success: function(data) {
-								if(data.code=="200"){
+					if ($("[name=name]").val() == "") {
+						showAlertDialog("等级名称未填写")
+					} else if ($("[name=prices]").val() == "") {
+						showAlertDialog("等级权重未填写")
+					} else {
+						jQuery.ajax('http://127.0.0.1:8080/api/xj/upd', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.updateStars),
+							success: function(data) {
+								if (data.code == "200") {
 									showAlertDialog("修改成功");
 									_this.query();
-									_this.updateStars="";
-								}else{
+									_this.updateStars = "";
+								} else {
 									showAlertDialog("修改失败，无此编号")
 								}
-						}
-					})
+							}
+						})
+					}
 				}
 
 			}
