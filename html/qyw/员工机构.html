@@ -92,7 +92,7 @@
 		}
 	</style>
 	<body style="background: #f5f5f5;">
-		<div class="container-fluid" id="cnt">
+		<div class="container-fluid" id="emp">
 			<div class="row">
 				
 				<div class="col-sm-6">
@@ -189,8 +189,8 @@
 	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
 	<script type="text/javascript" src="../../js/vue.js"></script>
 	<script>
-		var cnt=new Vue({
-			el:"#cnt",
+		var emp=new Vue({
+			el:"#emp",
 			data:{
 				dep:[],
 				page:[],
@@ -332,17 +332,7 @@
 							maxmin: true
 						})
 					}
-				} else if (ty == "jue") {
-					layer.open({
-						type: 2,
-						title: '调价',
-						area: ['550px', '150px'],
-						content: '项目调价.html',
-						anim: 2,
-						btnAlign: 'c',
-						maxmin: true
-					})
-				}
+				} 
 			})
 		});
 		
