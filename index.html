@@ -13,7 +13,7 @@
 	</head>
 
 	<body>
-		<div id="sec">
+		<div id="sec" >
 			<header>
 				<div style="display: flex;width: auto; justify-content: space-around;align-items: center;">
 					<a href="">	
@@ -38,7 +38,7 @@
 							<label>
 						<i class="layui-icon">&#xe770;</i>&nbsp;
 						<img  src="images/222.gif" class="layui-circle" width="40" height="40" style="border-radius: 40px;" />&nbsp;
-						<b>教员<i class="layui-icon">&#xe62e;</i>刘清</b>
+						<b>{{employee.empname}}<i class="layui-icon">&#xe62e;</i></b>
 						</label>
 					</li>
 					<li class="layui-nav-item" @click="changeLeft(1)">
@@ -135,7 +135,7 @@
 		<script type="text/javascript" src="js/convert.js"></script>
 		<script type="text/javascript" src="js/weixiu.js"></script>
 		<script type="text/javascript" src="js/colorCss.js"></script>
-
+		<script src="js/jq_ajax_config.js"></script>
 		<script type="text/javascript" src="js/vue.js"></script>
 		<script type="text/javascript" src="layui/layui.js"></script>
 		<!-- <script type="text/javascript" src="js/index.js"></script> -->
@@ -263,7 +263,13 @@
 				el: "#sec",
 				data: {
 					leftNavs: [],
-					colors: []
+					colors: [],
+					employee:{}
+				},mounted:function(){
+					let sthis=this;
+					jQuery.getJSON("http://127.0.0.1:8080/api/employee/getsession",function(da){
+						sthis.employee=da;
+					})
 				},
 				methods: {
 					changeLeft(i){
@@ -377,5 +383,7 @@
 			<!--	<li data-type="show">显示更多</li>-->
 		</ul>
 	</body>
-
+	<script>
+		
+	</script>
 </html>

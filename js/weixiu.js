@@ -352,7 +352,7 @@ var leftNav5 = [{
 	"text": "技工管理",
 	"leftNav_id": "26",
 	"name": "技工星级",
-	"href": "html/oyxy/messageList.html"
+	"href": "html/oyxy/技工星级主页面.html"
 }, {
 	"text": "技工管理",
 	"leftNav_id": "3",
