@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" />
+	<style type="text/css">
+		body {
+			margin: 0 auto;
+			padding-top: 30px;
+			background: #F5F5F5;
+			width: 300px;
+		}
+
+		.form-control {
+			display: inline-block;
+			width: 220px;
+		}
+
+		.btn {
+			margin-left: 20px;
+		}
+	</style>
+
+	<body>
+		<div id="type">
+			<div class="form-group">
+				<label for="inputEmail3" class="form-group" style="display: inline-block;"><span style="color: red;">*</span>品牌编码</label>
+				<div style="display: inline-block;">
+					<input type="text" v-model="type.ctsid" class="form-control" placeholder="品牌编码">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="inputPassword3" style="display: inline-block;" class="form-group"><span style="color: red;">*</span>品牌名称</label>
+				<div style="display: inline-block;">
+					<input type="text" v-model="type.ctsnames"  class="form-control" placeholder="品牌名称">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="inputPassword3" style="display: inline-block;" class="form-group">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: red;">*</span>首字母</label>
+				<div style="display: inline-block;">
+					<input type="text" v-model="type.cartypeszm"  class="form-control" placeholder="首字母">
+				</div>
+			</div>
+			<div class="form-group">
+				<button type="submit" style="margin-left: 130px;" class="btn btn-default" @click="yzType()">保存</button>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/jquery-1.12.4.js" type="text/javascript"></script>
+	<script src="../../js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript">
+		var type=new Vue({
+			el:"#type",
+			data:{
+				type:{
+					ctsid:"",
+					ctsnames:"",
+					cartypeszm:"",
+				}
+			},
+			methods:{
+				yzType(){
+					let _this = this;
+					if(this.ctsid=="" || this.ctsnames=="" || this.cartypeszm==""){
+						alert("内容不允许为空");
+						return;
+					}else{
+						jQuery.getJSON(`http://127.0.0.1:8080/api/cars/types/${_this.type.ctsid}`, function(pg) {
+							if (pg.length == 0) {
+								_this.addType();
+							} else {
+								alert("此品牌编号已存在");
+							}
+						});
+					}
+				},
+				addType(){
+					let _this = this;
+					jQuery.ajax(`http://127.0.0.1:8080/api/cars/type`, {
+						type: 'post',
+						data:JSON.stringify(_this.type),
+						contentType: "application/json",
+						success(data) {
+							if (data.code == "200") {
+								alert('新增成功');
+								parent.car.getType();//调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+								var index=parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+								parent.layer.close(index);
+							}
+						}
+					});
+				}
+			}
+		})
+	</script>
+</html>

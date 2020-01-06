@@ -290,7 +290,7 @@ var leftNav4 = [{
 	"text": "主数据",
 	"leftNav_id": "2",
 	"name": "车型档案",
-	"href": "html/mj/students.html"
+	"href": "html/mj/品牌车型.html"
 }, {
 	"text": "主数据",
 	"leftNav_id": "13",
