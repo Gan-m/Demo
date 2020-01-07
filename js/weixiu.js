@@ -170,20 +170,25 @@ var leftNav3 = [{
 	"name": "车辆资料",
 	"href": "html/oyxy/students.html"
 }, {
-	"text": "会员积分",
+	"text": "会员管理",
 	"leftNav_id": "13",
 	"name": "积分规则",
 	"href": "html/oyxy/roles.html"
 }, {
-	"text": "会员积分",
+	"text": "会员管理",
 	"leftNav_id": "24",
 	"name": "会员变迁",
 	"href": "html/oyxy/index.html"
 }, {
-	"text": "会员积分",
+	"text": "会员管理",
 	"leftNav_id": "26",
 	"name": "积分赠送",
 	"href": "html/oyxy/messageList.html"
+},{
+	"text": "会员管理",
+	"leftNav_id": "99",
+	"name": "会员查询",
+	"href": "html/yw/会员查询.html"
 }, {
 	"text": "客户回访",
 	"leftNav_id": "3",
@@ -332,7 +337,7 @@ var leftNav5 = [{
 	"text": "员工资料",
 	"leftNav_id": "1",
 	"name": "组织机构",
-	"href": "login/qyw/login.html"
+	"href": "html/qyw/员工机构.html"
 }, {
 	"text": "员工资料",
 	"leftNav_id": "2",
