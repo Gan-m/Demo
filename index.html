@@ -196,7 +196,14 @@
 								maxmin: true
 							})
 						} else if (ty == "logout") {
-							alert("注销了！！！")
+							let sftc=confirm("是否退出？");
+							if(sftc){
+								jQuery.getJSON("http://127.0.0.1:8080/api/employee/tc",function(da){
+									if(da.code=='200'){
+										location.href="login.html";		
+														}
+									})
+							}
 						}
 					})
 				})
