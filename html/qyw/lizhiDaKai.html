@@ -30,7 +30,7 @@
 						<!--基本表格表单S-->
 						<div class="widget">
 							<div class="widget-header" data-toggle="collapse" data-target="#基本信息">
-								<h4>基本资料</h4></div>
+								<h4>基本资料</h4><i class="icon-chevron-down"></i></div>
 							<div class="widget-content">
 								<div id="基本信息" class="table-responsive collapse in">
 									<table class="table table-UAform">
@@ -39,18 +39,18 @@
 												<td class="table-label">
 													<font class="red">*</font>员工编号</td>
 												<!-- 表单被禁用 disabled or readonly -->
-												<td class="table-info-left"><input type="text" name="bh" v-model="emp.employeeid" /></td>
+												<td class="table-info-left"><input type="text" v-model="emp.employeeid" /></td>
 												<td class="table-label">
 													<font class="red">*</font>员工姓名</td>
 												<td class="table-info-left">
-													<input type="text" name="name" v-model="emp.empname" />
+													<input type="text" v-model="emp.empname" />
 												</td>
 											</tr>
 											<tr>
 												<td class="table-label">
 													<font class="red">*</font>性别</td>
 												<td class="table-info-left">
-													<select v-model="emp.esex" name="sex">
+													<select v-model="emp.esex">
 														<option value="1" selected="selected">男</option>
 														<option value="0">女</option>
 													</select>
@@ -58,14 +58,14 @@
 												<td class="table-label">
 													<font class="red">*</font>登录账号</td>
 												<td class="table-info-left">
-													<input type="text" name="zh" v-model="emp.emplogenid" />
+													<input name="" type="text" v-model="emp.emplogenid" />
 												</td>
 											</tr>
 											<tr>
 												<td class="table-label">
 													<font class="red">*</font>登录密码</td>
 												<td class="table-info-left">
-													<input type="password" name="pwd" v-model="emp.emplogepaw" />
+													<input name="" type="password" v-model="emp.emplogepaw" />
 												</td>
 												<td class="table-label">
 													<font class="red">*</font>所在门店</td>
@@ -81,7 +81,7 @@
 													<font class="red">*</font>所在部门</td>
 												<!-- 表单被禁用 disabled or readonly -->
 												<td class="table-info-left">
-													<select v-model="emp.departmentid" name="bm" style="width:100px;">
+													<select v-model="emp.departmentid" style="width:100px;">
 														<option v-for="(te,i) in dep" :value="te.departmentid">{{te.depnames}}</option>
 													</select>
 												</td>
@@ -171,8 +171,8 @@
 					</div>
 
 					<div class="UAform-btn">
-						<button class="btn btn-save" @click="add">保存</button>
-						<button class="btn btn-remove" @click="gb">取消</button>
+						<!--<button  class="btn btn-submit"><i class="icon-white icon-arrow-up"></i>提交</button>-->
+						<button class="btn btn-remove" @click="gb">確定</button>
 					</div>
 				</form>
 			</div>
@@ -185,7 +185,7 @@
 	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
 	<script type="text/javascript" src="../../js/vue.js"></script>
 	<script>
-		var empAdd = new Vue({
+		var empUpd = new Vue({
 			el: "#cnt",
 			data: {
 				storeName: "",
@@ -195,33 +195,12 @@
 				employee: {
 					storeid: "1001"
 				},
-				emp: {
-					employeeid: "",
-					propertyid: "",
-					storeid: "",
-					departmentid: "",
-					stateid: "",
-					empname: "",
-					esex: "",
-					emplogenid: "",
-					emplogepaw: "",
-					education: "",
-					graduationschool: "",
-					major: "",
-					crrdid: "",
-					address: "",
-					newaddress: "",
-					empphone: "",
-					emergencyphone: "",
-					molphone: "",
-					email: "",
-					entrytimes: "",
-					lztimes: "",
-					brithtimes: ""
-				}
+				emp: {},
+				eid: ""
 			},
 			created: function() {
 				let _this = this;
+				this.eid = window.sessionStorage.getItem("eid");
 				jQuery.getJSON(`http://127.0.0.1:8080/api/dep/deps`, function(data) {
 					_this.dep = data;
 				});
@@ -234,33 +213,19 @@
 					_this.emp.storeid = data.storeid;
 					_this.storeName = data.storenames;
 				});
+				this.danCha();
 			},
 			methods: {
-				add() {
-					if(this.emp.employeeid != "" && this.emp.empname != "" && this.emp.esex != "" && this.emp.emplogenid != "" && this.emp.emplogepaw != "" && this.emp.departmentid) {
-						jQuery.ajax({
-							url: "http://127.0.0.1:8080/api/emp/add",
-							type: "post",
-							dataType: "json",
-							contentType: "application/json", //非常重要
-							data: JSON.stringify(this.emp), //提交json数组
-							success: function(te) {
-								if(te.code == '200') {
-									alert("保存成功！");
-									parent.emp.show(1, 2, 0); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
-									var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
-									parent.layer.close(index);
-								} else {
-									alert("保存失败！");
-								}
-							}
-						});
-					} else {
-						alert("*号必须填写");
-					};
+				danCha() {
+					let _this = this;
+					jQuery.getJSON("http://127.0.0.1:8080/api/emp/emp", {
+						"employeeid": this.eid
+					}, function(da) {
+						_this.emp = da;
+					});
 				},
 				gb() {
-					parent.emp.show(1, 2, 0); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+					parent.dim.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
 					var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
 					parent.layer.close(index);
 				}

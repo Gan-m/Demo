@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>离职登记</title>
+		<link href="../../css/UAform.css" rel="stylesheet">
+		<script src="../../js/jquery-1.12.4.js"></script>
+		<script src="../../js/bootstrap.min.js"></script>
+	</head>
+
+	<body>
+
+		<div class="container" id="dimAdd">
+
+			<div class="UAform-box" style="max-width:1200px; margin:0 auto;">
+				<!--控制整个表单的大小：目前是自适应大小居中，最大1200px-->
+				<form>
+					<!--整个表单禁用 class="form-disabled" -->
+
+					<div class="UAform-header">
+						<h2>离职登记</h2>
+
+					</div>
+
+					<!--UAform-content start-->
+					<div class="UAform-content">
+						<!--基本表格表单S-->
+						<div class="widget">
+							<div class="widget-header" data-toggle="collapse" data-target="#离职登记">
+								<h4>离职登记</h4></div>
+							<div class="widget-content">
+								<div id="离职登记" class="table-responsive collapse in">
+									<table class="table table-UAform">
+										<tbody>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>员工姓名</td>
+												<!-- 表单被禁用 disabled or readonly -->
+												<td class="table-info-left">
+													<select name="empname" v-model="dim.employeeid">
+														<template v-for="(te,i) in emp">
+															<option :value="te.employeeid">{{te.empname}}</option>
+														</template>
+													</select>
+												</td>
+												<td class="table-label">
+													<font class="red">*</font>离职时间</td>
+												<td class="table-info-left">
+													<input type="date" name="lizhishijian" v-model="dim.dimtimes"/>
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													离职原因</td>
+												<td class="table-info-left" colspan="4">
+													<textarea style="width: 200px;" v-model="dim.dimreasona"></textarea>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="UAform-btn">
+						<button class="btn btn-save" @click="add">保存</button>
+						<button class="btn btn-remove" @click="gb">取消</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</body>
+	<script src="../../js/jquery-1.12.4.js" type="text/javascript"></script>
+	<script src="../../js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../layui/layui.js" type="text/javascript"></script>
+	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script>
+		var dimAdd = new Vue({
+			el: "#dimAdd",
+			data: {
+				emp: {},
+				dim:{
+					dimissionid:"",
+					employeeid:"",
+					departmentid:"",
+					dimtimes:"",
+					dimreasona:""
+				}
+			},
+			created: function() {
+				let _this = this;
+				jQuery.getJSON("http://127.0.0.1:8080/api/emp/empName",function(da){
+					_this.emp=da;
+				});
+			},
+			methods: {
+				add() {
+					if(this.dim.employeeid != "" && this.dim.dimtimes != "") {
+						jQuery.ajax({
+							url: "http://127.0.0.1:8080/api/dim/add",
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(this.dim), //提交json数组
+							success: function(te) {
+								if(te.code == '200') {
+									alert("保存成功！");
+									parent.dim.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+									var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+									parent.layer.close(index);
+								} else {
+									alert("保存失败！");
+								}
+							}
+						});
+					} else {
+						alert("*号必须填写");
+					};
+				},
+				gb() {
+					parent.dim.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+					var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+					parent.layer.close(index);
+				}
+			}
+		});
+	</script>
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
+	<style type="text/css">
+		th{
+			text-align: center;
+		}
+	</style>
+	<body style="background:#f5f5f5;">
+		<div class="container-fluid" id="gw">
+			<div class="row">
+				<div class="col-sm-7">
+					<h2 class="form-group" style="float: left;">岗位定义</h2>		
+					<form class="form-inline" style="margin-top: 20px;float: right;">
+						<div class="form-group" >
+							<label for="exampleInputName2" style="font-weight: normal;font-size: 12px;">岗位编号：</label>
+							<input type="text" v-model="upd.departmentid" class="form-control" id="exampleInputName2" placeholder="岗位编号">
+						</div>
+						<div class="form-group">
+							<label for="exampleInputEmail2" style="font-weight: normal;font-size: 12px;">岗位名称：</label>
+							<input type="email" v-model="upd.depnames" class="form-control" id="exampleInputEmail2" placeholder="岗位名称">
+						</div>
+					</form>
+				</div>
+				<div class="col-sm-5">
+					<div class="form-group" style="float: left;margin-top: 20px;">
+						<button type="button" class="btn btn-default cz-btn" @click="add"><span class="glyphicon glyphicon-plus"></span>&nbsp;增加</button>
+						<button type="button" class="btn btn-default cz-btn" @click="del"><span class="glyphicon glyphicon-remove"></span>&nbsp;删除</button>
+						<button type="button" class="btn btn-default cz-btn" @click="bc"><span class="glyphicon glyphicon-tasks"></span>&nbsp;保存</button>
+						<button type="button" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-print"></span>&nbsp;导出</button>
+						<button type="button" class="btn btn-default addBtn cz-btn">关闭</button>
+					</div>	
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-5  col-sm-offset-3">
+					<table class="table table-striped table-bordered text-center">
+						<tr>
+							<th>岗位编号</th>
+							<th>岗位名称</th>
+							<th>操作</th>
+						</tr>	
+						<template v-for="(te,i) in deps.list">
+							<tr @click="xg(te.departmentid)">
+								<td>{{te.departmentid}}</td>
+								<td>{{te.depnames}}</td>		
+								<td><input type="checkbox" name="check" class="checkBtn"></td>
+							</tr>
+						</template>
+						
+						
+						<tfoot>
+							<tr>
+								<td colspan="3">
+									<ul class="pager">
+										<li>
+											<a @click="firstPage"  href="javascript:void(0)">首页</a>
+										</li>
+										<li>
+											<a @click="prePage" v-if="deps.hasPreviousPage" href="javascript:void(0)">上一页</a>
+										</li>
+										<li>
+											<a @click="nextPage" v-if="deps.hasNextPage" href="javascript:void(0)">下一页</a>
+										</li>
+										<li>
+											<a @click="lastPage" href="javascript:void(0)">末页</a>
+										</li>
+									</ul>
+						
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/jquery-1.12.4.js" type="text/javascript"></script>
+	<script src="../../js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript">
+		var gw=new Vue({
+			el:"#gw",
+			data:{
+				deps:[],
+				upd:{
+					departmentid:"",
+					depnames:"",
+					depfaid:"57",
+				}
+			},
+			created:function(){
+				this.show(1,6);
+			},
+			methods:{
+				firstPage(){
+					this.show(this.deps.navigateFirstPage,this.deps.pageSize);
+				},
+				prePage(){
+					this.show(this.deps.prePage,this.deps.pageSize);
+				},
+				nextPage(){
+					this.show(this.deps.nextPage,this.deps.pageSize);
+				},
+				lastPage(){
+					this.show(this.deps.navigateLastPage,this.deps.pageSize);
+				},
+				show(p,s){
+					let _this=this;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/dep/depPage`,{"p":p,"s":s},function(da){
+						_this.deps=da;
+					});
+				},
+				xg(depid){
+					let _this=this;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/dep/depCha`,{"bh":depid},function(da){
+						_this.upd=da;
+					});
+				},
+				bc(){
+					let _this=this;
+					jQuery.ajax({
+						url: "http://127.0.0.1:8080/api/dep/upd",
+						type: "put",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(this.upd), //提交json数组
+						success: function(te) {
+							if(te.code == '200') {
+								alert("修改成功！");
+								_this.show(1,6);
+							} else {
+								alert("修改失败！");
+							}
+						}
+					});
+				},
+				add(){
+					let _this=this;
+					/*jQuery.getJSON(`http://127.0.0.1:8080/api/dep/depCha`,{"bh":this.upd.departmentid},function(da){
+						if(da!=null){
+							alert("该编号已有！！！");
+						}else{*/
+							jQuery.ajax({
+								url: "http://127.0.0.1:8080/api/dep/add",
+								type: "post",
+								dataType: "json",
+								contentType: "application/json", //非常重要
+								data: JSON.stringify(this.upd), //提交json数组
+								success: function(te) {
+									if(te.code == '200') {
+										alert("保存成功！");
+										_this.show(1,6);
+									} else {
+										alert("保存失败！");
+									}
+								}
+							});
+						/*}
+					});*/
+				},
+				del(){
+					let _this=this;
+					let t = 0;
+					let j = [];
+					let ck = $("[name=check]");
+					for(let i = 0; i < ck.size(); i++) {
+						if(ck[i].checked) {
+							j.push(this.deps.list[i].departmentid);
+						}
+					}
+					if(j != null) {
+						let tis=this;
+						$.ajax({
+							url: "http://127.0.0.1:8080/api/dep/del",
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(j), //提交json数组
+							success: function(da) {
+								if(da.code == '200') {
+									alert("删除成功！");
+									_this.show(1,6);
+								} else {
+									alert("删除失败！");
+								}
+							}
+						})
+					}
+				}
+			}
+		});
+	</script>
+</html>

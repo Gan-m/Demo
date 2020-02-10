@@ -173,7 +173,7 @@
 					<div class="UAform-btn">
 						<!--<button  class="btn btn-submit"><i class="icon-white icon-arrow-up"></i>提交</button>-->
 						<button class="btn btn-save" @click="upd()">保存</button>
-						<button class="btn btn-remove">取消</button>
+						<button class="btn btn-remove" @click="gb">取消</button>
 					</div>
 				</form>
 			</div>
@@ -194,7 +194,7 @@
 				pro: [],
 				sto: [],
 				employee: {
-					storeid: "000000"
+					storeid: "1001"
 				},
 				emp: {},
 				eid: ""
@@ -239,12 +239,16 @@
 								parent.emp.show(1, 2, 0); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
 								var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
 								parent.layer.close(index);
-
 							} else {
 								alert("修改失败！");
 							}
 						}
 					});
+				},
+				gb() {
+					parent.emp.show(1, 2, 0); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+					var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+					parent.layer.close(index);
 				}
 			}
 		});

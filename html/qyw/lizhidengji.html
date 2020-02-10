@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
+		<meta charset="UTF-8">
 		<title></title>
 	</head>
 	<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css"/>
@@ -92,29 +92,27 @@
 		}
 	</style>
 	<body style="background: #f5f5f5;">
-		<div class="container-fluid" id="emp">
+		<div class="container-fluid" id="dim">
 			<div class="row">
 				
 				<div class="col-sm-6">
-					<h2 class="form-group" style="float: left;margin-left: 50px;">员工组织</h2>		
+					<h2 class="form-group" style="float: left;margin-left: 50px;">离职登记</h2>		
 					<div class="form-group" style="float: right;margin-top: 20px;">
 						<input type="text" name="tj" style="width: 300px;" class="form-control" id="exampleInputEmail2" placeholder="匹配编码/名称/名称简码">
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="form-group" style="float: left;margin-top: 20px;" id="but">
-						<button type="button" class="btn btn-default checkBtn cz-btn" @click="show(1,2,0)"><span class="glyphicon glyphicon-search"></span>查询</button>
-						<button type="button" class="btn btn-default checkBtn cz-btn" ty="add"><span class="glyphicon glyphicon-plus"></span>增加员工</button>
-						<button type="button" class="btn btn-default addBtn cz-btn" ty="modify" @click="update()"><span class="glyphicon glyphicon-pencil"></span>修改</button>
-						<button type="button" class="btn btn-default cz-btn" @click="del()"><span class="glyphicon glyphicon-remove"></span>&nbsp;删除</button>
-						<button type="button" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-tasks"></span>&nbsp;导出</button>
-						<button type="button" class="btn btn-default cz-btn" ty="jue"><span class="glyphicon glyphicon-cog"></span>&nbsp;员工角色</button>
-						<button type="button" class="btn btn-default checkBtn cz-btn">关闭</button>
+						<button type="button" class="btn btn-default checkBtn cz-btn" ty="add" ><span class="glyphicon glyphicon-tasks"></span>离职</button>
+						<button type="button" class="btn btn-default checkBtn cz-btn" @click="huigun" ><span class="glyphicon glyphicon-plus"></span>回滚</button>
+						<button type="button" class="btn btn-default addBtn cz-btn" ty="dk" @click="dk"><span class="glyphicon glyphicon-pencil"></span>打开</button>
+						<button type="button" class="btn btn-default cz-btn" @click="del"><span class="glyphicon glyphicon-remove"></span>&nbsp;删除</button>
+						<button type="button" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-search"></span>&nbsp;查询</button>
 					</div>	
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-2" id="tree">
+				<!--<div class="col-sm-2" id="tree">
 					<div class="tree well" style="width: 200px;padding-left: 0px;">
 						<ul style="padding-left: 25px;">
 							<li>
@@ -129,31 +127,29 @@
 							</li>
 						</ul>
 					</div>
-				</div>
+				</div>-->
 				<div class="col-sm-10">
 					<table class="table table-striped table-bordered text-center">
 						<tr>
-							<th>岗位名称</th>
-							<th>工号</th>
+							<th>部门</th>
+							<th>员工编号</th>
 							<th>姓名</th>
 							<th>性别</th>
-							<th>现住地址</th>
-							<th>联系电话</th>
-							<th>Email</th>
-							<th>入职时间</th>
+							<th>职位</th>
+							<th>离职日期</th>
+							<th>离职原因</th>
 							<th>操作</th>
 						</tr>
 						<template v-for="(te,i) in page.list">
 						<tr>
-							<td>{{te.depnames}}</td>
+							<td>{{te.depnamesfa}}</td>
 							<td>{{te.employeeid}}</td>
 							<td>{{te.empname}}</td>
 							<td v-if="te.esex==1">男</td>
 							<td v-if="te.esex==0">女</td>
-							<td>{{te.newaddress}}</td>
-							<td>{{te.emergencyphone}}</td>
-							<td>{{te.email}}</td>
-							<td>{{te.entrytimes}}</td>
+							<td>{{te.depnames}}</td>
+							<td>{{te.dimtimes}}</td>
+							<td>{{te.dimreasona}}</td>
 							<td><input type="checkbox" name="check" class="checkBtn"></td>
 						</tr>
 						</template>
@@ -189,42 +185,64 @@
 	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
 	<script type="text/javascript" src="../../js/vue.js"></script>
 	<script>
-		var emp=new Vue({
-			el:"#emp",
+		var dim=new Vue({
+			el:"#dim",
 			data:{
-				dep:[],
-				page:[],
-				fidd:""
+				page:{}
 			},
 			created:function(){
-				let _this=this;
-				jQuery.getJSON("http://127.0.0.1:8080/api/dep/dep",function(da){
-					_this.dep=da;
-				});
-				this.show(1,2,0);
+				this.show(1,2);
 			},
 			methods:{
 				firstPage(){
-					this.show(this.page.navigateFirstPage,this.page.pageSize,this.fidd);
+					this.show(this.page.navigateFirstPage,this.page.pageSize);
 				},
 				prePage(){
-					this.show(this.page.prePage,this.page.pageSize,this.fidd);
+					this.show(this.page.prePage,this.page.pageSize);
 				},
 				nextPage(){
-					this.show(this.page.nextPage,this.page.pageSize,this.fidd);
+					this.show(this.page.nextPage,this.page.pageSize);
 				},
 				lastPage(){
-					this.show(this.page.navigateLastPage,this.page.pageSize,this.fidd);
+					this.show(this.page.navigateLastPage,this.page.pageSize);
 				},
-				show(p,s,fid){
+				show(p,s){
 					let _this=this;
-					this.fidd=fid;
-					let tj=$("[name=tj]").val();
-					jQuery.getJSON("http://127.0.0.1:8080/api/emp/emps",{"p":p,"s":s,"fid":fid,"tj":tj},function(da){
+					jQuery.getJSON(`http://127.0.0.1:8080/api/dim/pageDim`,{"p":p,"s":s},function(da){
 						_this.page=da;
 					});
 				},
-				update(){
+				huigun(){
+					let t = 0;
+					let j = [];
+					let ck = $("[name=check]");
+					for(let i = 0; i < ck.size(); i++) {
+						if(ck[i].checked) {
+							j.push(this.page.list[i]);
+						}
+					}
+					if(confirm("确认要恢复吗？？？")){
+						if(j != null) {
+							let tis=this;
+							$.ajax({
+								url: "http://127.0.0.1:8080/api/dim/huigun",
+								type: "post",
+								dataType: "json",
+								contentType: "application/json", //非常重要
+								data: JSON.stringify(j), //提交json数组
+								success: function(da) {
+									if(da.code == '200') {
+										alert("恢复成功！");
+										tis.show(1,2);
+									} else {
+										alert("恢复失败！");
+									}
+								}
+							})
+						}
+					}
+				},
+				dk(){
 					let t = 0;
 					let j = 0;
 					let ck = $("[name=check]");
@@ -247,51 +265,36 @@
 					let ck = $("[name=check]");
 					for(let i = 0; i < ck.size(); i++) {
 						if(ck[i].checked) {
-							j.push(this.page.list[i].employeeid);
+							j.push(this.page.list[i]);
 						}
 					}
-					if(j != null) {
-						let tis=this;
-						$.ajax({
-							url: "http://127.0.0.1:8080/api/emp/del",
-							type: "post",
-							dataType: "json",
-							contentType: "application/json", //非常重要
-							data: JSON.stringify(j), //提交json数组
-							success: function(da) {
-								if(da.code == '200') {
-									alert("删除成功！");
-									tis.show(1,2,0);
-								} else {
-									alert("删除失败！");
+					if(confirm("确认要删除吗？？？")){
+						if(j != null) {
+							let tis=this;
+							$.ajax({
+								url: "http://127.0.0.1:8080/api/dim/del",
+								type: "post",
+								dataType: "json",
+								contentType: "application/json", //非常重要
+								data: JSON.stringify(j), //提交json数组
+								success: function(da) {
+									if(da.code == '200') {
+										alert("删除成功！");
+										tis.show(1,2);
+									} else {
+										alert("删除失败！");
+									}
 								}
-							}
-						})
+							})
+						}
 					}
+					
 				}
 			}
 		});
+		
 	</script>
-	<script type="text/javascript">
-		$(function() {
-			$('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-			$('.tree li.parent_li > span').parent('li.parent_li').find(' > ul > li').hide('fast');
-			$('.tree li.parent_li > span').attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass(
-				'icon-minus-sign')
-			$('.tree li.parent_li > span').on('click', function(e) {
-				var children = $(this).parent('li.parent_li').find(' > ul > li');
-				if (children.is(":visible")) {
-					children.hide('fast');
-					$(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass(
-						'icon-minus-sign');
-				} else {
-					children.show('fast');
-					$(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass(
-						'icon-plus-sign');
-				}
-				e.stopPropagation();
-			});
-		});
+	<script>
 		/*顶部菜单操作部分*/
 		layui.use('layer', function() {
 			var layer = layui.layer;
@@ -300,14 +303,14 @@
 				if (ty == "add") {
 					layer.open({
 						type: 2,
-						title: '员工卡片',
-						area: ['860px', '550px'],
-						content: '员工卡片.html',
+						title: '离职登记',
+						area: ['500px', '335px'],
+						content: 'lizhiMoTai.html',
 						anim: 2,
 						btnAlign: 'c',
 						maxmin: true
 					})
-				} else if (ty == "modify") {
+				} else if (ty == "dk") {
 					let t = 0;
 					let j = 0;
 					let ck = $("[name=check]");
@@ -318,7 +321,7 @@
 						}
 					}
 					if(t>1){
-						alert("只能选一个修改！！！");
+						alert("只能选一个打开！！！");
 						return;
 					}
 					if(t==1){
@@ -326,7 +329,7 @@
 							type: 2,
 							title: '个人密码',
 							area: ['860px', '550px'],
-							content: '员工卡片修改.html',
+							content: 'lizhiDaKai.html',
 							anim: 2,
 							btnAlign: 'c',
 							maxmin: true
@@ -334,7 +337,6 @@
 					}
 				} 
 			})
-		});
-		
+			})
 	</script>
 </html>
