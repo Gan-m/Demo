@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link href="../../../css/UAform.css" rel="stylesheet">
+		<script src="../../../js/jquery-1.12.4.js"></script>
+		<script src="../../../js/bootstrap.min.js"></script>
+	</head>
+	
+	<body>
+		<div class="container" id="cnt">
+		
+			<div class="UAform-box" style="max-width:1200px; margin:0 auto;">
+				<!--控制整个表单的大小：目前是自适应大小居中，最大1200px-->
+				<form>
+					<!--整个表单禁用 class="form-disabled" -->
+		
+				
+		
+					<!--UAform-content start-->
+					<div class="UAform-content">
+						<!--基本表格表单S-->
+						<div class="widget">
+						
+								
+							<div class="widget-content">
+								<div id="基本信息" class="table-responsive collapse in">
+									<table class="table table-UAform">
+										<tbody>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>技工编号</td>
+												<!-- 表单被禁用 disabled or readonly -->
+												<td class="table-info-left">
+													<input type="text" v-model="emp.employeeid" /></td>
+												<td class="table-label">
+													<font class="red">*</font>技工姓名</td>
+												<td class="table-info-left">
+													<input type="text" v-model="emp.empname" />
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>登录账号</td>
+												<td class="table-info-left">
+													<input name="" type="text" v-model="emp.emplogenid" />
+													
+												</td>
+												<td class="table-label">
+													<font class="red">*</font>登录密码</td>
+												<td class="table-info-left">
+													<input name="" type="text" v-model="emp.emplogenid" />
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>手机号</td>
+												<td class="table-info-left">
+													<input name="" type="password" v-model="emp.emplogepaw" />
+												</td>
+												<td class="table-label">
+													<font class="red">*</font>身份证号</td>
+												<td class="table-info-left">
+													<input name="" type="password" v-model="emp.emplogepaw" />
+													
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>所在部门</td>
+												<!-- 表单被禁用 disabled or readonly -->
+												<td class="table-info-left">
+													<select v-model="emp.departmentid" style="width:100px;">
+														<option v-for="(te,i) in dep" :value="te.departmentid">{{te.depnames}}</option>
+													</select>
+													所在班组
+													<select v-model="emp.departmentid" style="width:100px;">
+														<option v-for="(te,i) in dep" :value="te.departmentid">{{te.depnames}}</option>
+													</select>
+												</td>
+												<td class="table-label">地址</td>
+												<td class="table-info-left">
+													<input name="" type="text" v-model="emp.graduationschool" />
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													</font>星级</td>
+												<td class="table-info-left">
+													<select >
+														<option >{{te.propertyname}}</option>
+													</select>
+												</td>
+												<td class="table-label">
+													</font>性别</td>
+												<td class="table-info-left">
+													<select v-model="emp.esex">
+														<option value="1" selected="selected">男</option>
+														<option value="0">女</option>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													</font>维修工种</td>
+												<td class="table-info-left">
+													<input name="" type="text" v-model="emp.major" />
+												</td>
+												<td class="table-label">
+													</font>维修品牌</td>
+												<td class="table-info-left">
+													<input name="" type="text" v-model="emp.crrdid" />
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													</font>组长</td>
+												<td class="table-info-left">
+													<input name="" type="checkbox" />
+												</td>
+												
+											</tr>
+											
+										</tbody>
+									</table>
+								</div>
+							</div>
+						
+					</div>
+		
+					
+				</form>
+			</div>
+		</div>
+		<div class="UAform-btn">
+			<button class="btn btn-save" @click="upd()">保存</button>
+			<button class="btn btn-remove">取消</button>
+		</div>
+	</body>
+	<script src="../../../js/jquery-1.12.4.js" type="text/javascript"></script>
+	<script src="../../../js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../../layui/layui.js" type="text/javascript"></script>
+	<script src="../../../js/jq_ajax_config.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../../js/vue.js"></script>
+	
+	
+</html>

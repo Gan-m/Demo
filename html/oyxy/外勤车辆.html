@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<link rel="stylesheet" href="../../css/bootstrap.min.css" />
+
+<body>
+		<div id="st">
+			<div class="row" class="" style="border-bottom: 2px solid #9F9F9F; ">
+				<div class="col-md-12 " style="background-color: #F7FFFF;">
+					<div class="col-md-2">
+						<h4>外勤车辆</h4>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="row" style="padding-top: 20px; ">
+				<div class="col-md-12 " style="border: 0px solid black; " >
+					<div class="col-md-2" style="display: inline; border: 0px solid black; ">车牌号:
+						<input type="text" class="form-control" name="caid" v-model="updateworkcars.caid"
+						 style="width:70%;display: inline;" /></div>
+					<div class="col-md-2" style="display: inline; border: 0px solid black; ">品牌:
+						<input type="text" class="form-control" name="carBrand" v-model="updateworkcars.carbrand"
+						 style="width:70%;display: inline;" /></div>
+					<div class="col-md-2" style="display: inline; border: 0px solid black; ">车型:
+						<input type="text" class="form-control" name="carType" v-model="updateworkcars.cartype"
+						 style="width:70%;display: inline;" /></div>
+					<div class="col-md-2" style="display: inline; border: 0px solid black; ">当前里程:
+						<input type="text" class="form-control" name="clic" v-model="updateworkcars.clic"
+						style="width:60%;display: inline;" /></div>
+					<div class="col-md-2" style="display: inline; border: 0px solid black;">班组:
+						<select style="" id="opption">
+							<template v-for="(temp) in banzu">
+							<option :value="temp.teamid">{{temp.teamname}}</option>
+							</template>	
+						</select>
+						<button type="button" style="width:70px;" @click="add" class="btn btn-default cz-btn col-md-offset-0" type="update"><span class="glyphicon glyphicon-remove"></span>&nbsp;新增&nbsp;</button>
+					</div>
+					
+					
+					<button type="button"  style="width:70px;" @click="upd" class="btn btn-default cz-btn" type="update"><span class="glyphicon glyphicon-remove"></span>&nbsp;修改&nbsp;</button>&nbsp;&nbsp;&nbsp;
+					<button type="button"  style="width:70px;" @click="dele" class="btn btn-default cz-btn" ty="remove"><span class="glyphicon glyphicon-cog"></span>&nbsp;删除&nbsp;</button>
+				</div>
+			</div>
+
+
+			<div class="col-sm-12" style="padding-top: 5px; ">
+				<table class="table table-striped table-bordered text-center">
+					<tr>
+						<td>车牌号</td>
+						<td>品牌</td>
+						<td>车型</td>
+						<td>当前里程</td>
+						<td>归属班组</td>
+						<td>操作</td>
+					</tr>
+					<template v-for="(temp) in workcars.list">
+						<tr>
+							<td @click="update(temp.wid)">{{temp.caid}}</td>
+							<td>{{temp.carbrand}}</td>
+							<td>{{temp.cartype}}</td>
+							<td>{{temp.clic}}</td>
+							<td>{{temp.teamname}}</td>
+							<td><input type="checkbox" :value="temp.wid" v-model="sz" name="kk" class="checkBtn"></td>
+						</tr>
+					</template>
+					<tfoot>
+						<tr>
+							<td colspan="8">
+								<ul class="pager">
+									<li>
+										<a  href="javascript:void(0)">首页</a>
+									</li>
+									<li>
+										<a  @click="operation(1)">上一页</a>
+									</li>
+									<li>
+										<a  @click="operation(2)">下一页</a>
+									</li>
+									<li>
+										<a href="javascript:void(0)">末页</a>
+									</li>
+								</ul>
+					
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../js/dialog.js"></script>
+	<script src="../../layui/layui.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script>
+		var pg;
+		var st = new Vue({
+			el: "#st",
+			data: {
+				Fywork: {
+					pageNum: "1",
+					pageSize: "3"
+				},
+				pageinfo: {
+					cid: "",
+					cname: "",
+					pid: "",
+					zhi: "12"
+				},
+				workcars: {},
+				addWorkcars: {
+					teamid: "",
+					caid: "",
+					carBrand: "",
+					carType: "",
+					clic: ""
+					
+				},
+				sz: [],
+				updateworkcars: {},
+				banzu:{
+					teamid:""
+				}
+			},
+			created: function() {
+				this.query(1,3);
+				this.queryBanzu();
+			},
+			methods: {
+				queryBanzu() {//子班组
+					let _this = this;
+					jQuery.ajax('http://127.0.0.1:8080/api/bz/Banzushow', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						success: function(data) {
+							_this.banzu = data;
+						}
+					})
+				},
+				query(p, s) {
+					let _this = this;
+					_this.Fywork.pageNum = p;
+					_this.Fywork.pageSize = s;
+					jQuery.ajax('http://127.0.0.1:8080/api/wq/query', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(_this.Fywork),
+						success: function(data) {
+							_this.workcars = data;
+							pg=data;
+						}
+					})
+				},
+				add() {
+					let _this = this;
+					_this.addWorkcars.teamid = $("[name=teamid]").val();
+					_this.addWorkcars.caid = $("[name=caid]").val();
+					_this.addWorkcars.carBrand = $("[name=carBrand]").val();
+					_this.addWorkcars.carType = $("[name=carType]").val();
+					_this.addWorkcars.clic = $("[name=clic]").val();
+					_this.addWorkcars.teamid =$("#opption").val();
+					var ss=$("#opption").val();
+					if ($("[name=caid]").val() == "") {
+						showAlertDialog("车牌号未填写")
+					} else if ($("[name=carBrand]").val() == "") {
+						showAlertDialog("品牌未填写")
+					} else if ($("[name=carType]").val() == "") {
+						showAlertDialog("车型未填写")
+					} else if ($("[name=clic]").val() == "") {
+						showAlertDialog("当前里程未填写")
+					} else {
+						
+						jQuery.ajax('http://127.0.0.1:8080/api/wq/add', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.addWorkcars),
+							success: function(data) {
+								if (data.code == "200") {
+									showAlertDialog("新增成功");
+									_this.updateworkcars = "";
+									_this.query();
+
+								} else {
+									showAlertDialog("新增失败，有此等级名称")
+								}
+							}
+						})
+					}
+				},
+				dele() {
+					var yesNo=confirm("是否要删除?");
+					if(yesNo){
+						let _this = this;
+						jQuery.ajax('http://127.0.0.1:8080/api/wq/del', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.sz),
+							success: function(data) {
+								if (data.code == "200") {
+									showAlertDialog("删除成功");
+									_this.query();
+								} else {
+									showAlertDialog("删除失败")
+								}
+							}
+						})
+					}
+				},
+				update(id) {
+					let _this = this;
+					jQuery.ajax('http://127.0.0.1:8080/api/wq/queryByid', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(id),
+						success: function(data) {
+							_this.updateworkcars = data;
+							$("#opption").val(data.teamid);
+							//alert(111)
+						}
+					})
+
+				},
+				upd() {
+					
+					let _this = this;
+					_this.updateworkcars.teamid=$("#opption").val();
+					if ($("[name=caid]").val() == "") {
+						showAlertDialog("车牌号未填写")
+					} else if ($("[name=carBrand]").val() == "") {
+						showAlertDialog("品牌未填写")
+					} else if ($("[name=carType]").val() == "") {
+						showAlertDialog("车型未填写")
+					} else if ($("[name=clic]").val() == "") {
+						showAlertDialog("当前里程未填写")
+					} else {
+						jQuery.ajax('http://127.0.0.1:8080/api/wq/upd', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.updateworkcars),
+							success: function(data) {
+								if (data.code == "200") {
+									showAlertDialog("修改成功");
+									_this.query();
+									_this.updateworkcars = "";
+								} else {
+									showAlertDialog("修改失败，无此编号")
+								}
+							}
+						})
+					}
+				},
+				//		进行	//上一页//下一页操作
+			operation(pd) {
+				if(pd==1){
+					if(pg.hasPreviousPage) {
+						this.query(pg.prePage, pg.pageSize);
+					} else {
+						showAlertDialog("没有上一页");
+					}
+				}else if(pd==2){
+					if(pg.hasNextPage) {
+						this.query(pg.nextPage, pg.pageSize);
+					} else {
+						showAlertDialog("没有下一页");
+					}
+				}	
+			}
+
+			}
+
+		})
+	</script>
+
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style>
+		div{
+			border:0px solid black;
+		}
+	</style>
+	<link rel="stylesheet" href="../../css/bootstrap.css" />
+	<link rel="stylesheet" href="../../css/bootstrap.min.css" />
+
+	<body>
+		<div id="st">
+			<div class="row" class="" style="border-bottom: 2px solid #9F9F9F;">
+				<div class="col-md-12" style="background-color: #F7FFFF;">
+					<div class="col-md-2">
+						<h4>客户档案</h4>
+					</div>
+					<div class=" col-md-4 col-md-offset-4" style="margin-top: 2px;">
+						<input type="text" name="szhi" class="form-control" placeholder="匹配名称/名称简码/手机号/会员卡号/车牌号" aria-describedby="basic-addon2">
+					</div>
+					<div class=" col-md-1 " style="margin-top: 2px;">
+						<button type="button" @click="queryLike" style="background-color: orange; color: white; border: 1px solid orange;" class="btn btn-default">&nbsp;&nbsp;搜索&nbsp;&nbsp;</button>
+
+					</div>
+					<div class=" col-md-1 " style="margin-top: 2px;">
+						<button type="button" style="background-color: #868E96; color: white; border: 1px solid #868E96;" class="btn btn-default col-md-offset-7">关闭</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" class="container">
+				<div class="col-md-12" style="padding: 5px;">
+					<div class="col-md-7 col-md-offset-5" style="border:  0px solid;">
+						<button type="button" id="customer" class="btn btn-default cz-btn col-md-offset-1" ty="modify"><span class="glyphicon glyphicon-pencil"></span>&nbsp;客户编辑</button>
+						<button type="button" id="customer2" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-remove"></span>&nbsp;车资料</button>
+						<button type="button" class="btn btn-default cz-btn" ty="money"><span class="glyphicon glyphicon-cog"></span>&nbsp;客户分类</button>
+						<button type="button" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-tasks"></span>&nbsp;查询</button>
+						<button type="button" class="btn btn-default cz-btn col-md-offset-2"><span class="glyphicon glyphicon-print "></span>&nbsp;导出</button>
+						<button type="button" class="btn btn-default addBtn cz-btn">字段设置</button>
+					</div>
+				</div>
+			</div>
+			<div class="row" class="container" style="background-color: #EFF7FF;  border: 1px solid black;" id="kehub">
+				<div class="col-md-12" style="padding: 5px;" id="nac1">
+					<div class="col-md-1 " style="font-weight:600">客户编辑></div>
+					<div class="col-md-2 " ty="addcar">增加客户和车辆</div>
+					<div class="col-md-1 " ty="add">增加客户</div>
+					<div class="col-md-1 " ty="upda" @click="savesz">修改客户</div>
+					<div class="col-md-1 " @click="dele">删除客户</div>
+					<div class="col-md-offset-11 right" id="pake">收起</div>
+				</div>
+			</div>
+			<div class="row" class="container" style="background-color: #EFF7FF; border: 1px solid black;" id="kehub2">
+				<div class="col-md-12" style="padding: 5px;" id="nac1">
+					<div class="col-md-3 " style="font-weight:600">车辆编辑></div>
+					<div class="col-md-1 " ty="" @click="saveszCar">增加车辆</div>
+					<div class="col-md-1 " ty="" @click="saveszCarupdate">修改车辆</div>
+					<div class="col-md-1 " @click="dele2">删除车辆</div>
+					<div class="col-md-offset-11 right" id="pake2">收起</div>
+				</div>
+			</div>
+			<div class="row" class="container table-responsive" style="height: 350px;">
+
+				<table border="1" class="table table-striped table-bordered text-center">
+					<th>
+					<td>客户编码</td>
+					<td>客户名称</td>
+					<td>详细地址</td>
+					<td>手机号</td>
+					<td>客户生日</td>
+					<td>客户市区</td>
+					<td>客户县城</td>
+					<td>客户备注</td>
+					<td>操作</td>
+					</th>
+
+					<tr v-for="(temp,i) in pageinfo.list">
+						<td>{{i+1}}</td>
+						<td  @click="clientCarByid(temp.clientno)" >{{temp.clientno}}</td>
+						<td>{{temp.clientname}}</td>
+						<td>{{temp.caddress}}</td>
+						<td>{{temp.cphone}}</td>
+						<td>{{temp.cbrind}}</td>
+						<td>{{temp.city}}</td>
+						<td>{{temp.county}}</td>
+						<td>{{temp.khbz}}</td>
+						<td><input type="checkbox" :value="temp.clientno" v-model="sz" name="kk" class="checkBtn"></td>
+					</tr>
+				</table>
+
+
+			</div>
+
+			<tfoot>
+				<tr>
+					<td colspan="12">
+						<ul class="pager">
+							<li>
+								<a href="javascript:void(0)">首页</a>
+							</li>
+							<li>
+								<a @click="operation(1)">上一页</a>
+							</li>
+							<li>
+								<a @click="operation(2)">下一页</a>
+							</li>
+							<li>
+								<a href="javascript:void(0)">末页</a>
+							</li>
+						</ul>
+
+					</td>
+				</tr>
+			</tfoot>
+			<div class="row" class="container table-responsive ">
+				<div class="col-md-12" style=" background-color: #EFF7FF">
+					<div class="col-md-1" style="padding: 5px;">车辆信息</div>
+					<div class="col-md-1" style="padding: 5px;">历史消费</div>
+					<div class="col-md-1" style="padding: 5px;">历史回访</div>
+				</div>
+				<table border="1" class="table table-striped table-bordered text-center">
+					<th style="">
+					<td>客户车牌</td>
+					<td>品牌</td>
+					<td>驾驶员</td>
+					<td>驾驶员电话</td>
+					<td>驾驶员生日</td>
+					<td>车辆里程</td>
+					<td>购买日期</td>
+					<td>车辆进厂日期</td>
+					<td>操作</td>
+					</th>
+					<tr v-for="(temp,i) in pageinfos.list">
+						<td>{{i+1}}</td>
+						<td>{{temp.cno}}</td>
+						<td>{{temp.ctsnames}}</td>
+						<td>{{temp.driver}}</td>
+						<td>{{temp.driverphone}}</td>
+						<td>{{temp.driverbirth}}</td>
+						<td>{{temp.clicang}}</td>
+						<td>{{temp.purchasetime}}</td>
+						<td>{{temp.jctime}}</td>
+						<td><input type="checkbox" :value="temp.cno" v-model="sz2" name="kk2" ></td>
+					</tr>
+
+				</table>
+			</div>
+
+			<tfoot>
+				<tr>
+					<td colspan="12">
+						<ul class="pager">
+							<li>
+								<a href="javascript:void(0)">首页</a>
+							</li>
+							<li>
+								<a @click="operations(1)">上一页</a>
+							</li>
+							<li>
+								<a @click="operations(2)">下一页</a>
+							</li>
+							<li>
+								<a href="javascript:void(0)">末页</a>
+							</li>
+						</ul>
+
+					</td>
+				</tr>
+			</tfoot>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../js/dialog.js"></script>
+	<script src="../../layui/layui.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script>
+		var pg;
+		var pgs;
+		var szzhi;
+		var st = new Vue({
+			el: "#st",
+			data: {
+				Fywork: {
+					pageNum: "1",
+					pageSize: "3"
+				},
+				pageinfo: {},
+				Fyworks: {
+					pageNum: "1",
+					pageSize: "1",
+					id:""
+				},
+				pageinfos: {},
+				sz: [],
+				sz2: []
+			},
+			created: function() {
+				this.query(1, 6)
+				this.querys(1, 1)
+			},
+			methods: {
+				queryBanzu() { //子班组
+					let _this = this;
+					jQuery.ajax('http://127.0.0.1:8080/api/bz/Banzushow', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						success: function(data) {
+							_this.banzu = data;
+						}
+					})
+				},
+				query(p, s) {//客户数据
+					let _this = this;
+					_this.Fywork.pageNum = p;
+					_this.Fywork.pageSize = s;
+					jQuery.ajax('http://127.0.0.1:8080/api/kh/clientQuery', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(_this.Fywork),
+						success: function(data) {
+							// alert(JSON.stringify(data))
+							_this.pageinfo = data;
+							pg = data;
+						}
+					})
+				},
+				queryLike(p, s) {//客户数据
+					let _this = this;
+					_this.Fywork.pageNum = 1;
+					_this.Fywork.pageSize = 6;
+					var sszhi=$("[name=szhi]").val();
+					_this.Fywork.id=sszhi;
+					// alert(sszhi)
+					jQuery.ajax('http://127.0.0.1:8080/api/kh/clientQueryLike', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(_this.Fywork),
+						success: function(data) {
+							// alert(JSON.stringify(data))
+							_this.pageinfo = data;
+							pg = data;
+						}
+					})
+				},
+				querys(p, s) { //客户车辆
+					let _this = this;
+					_this.Fyworks.pageNum = p;
+					_this.Fyworks.pageSize = s;
+					jQuery.ajax('http://127.0.0.1:8080/api/kh/clientCarQuery', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(_this.Fyworks),
+						success: function(data) {
+							// alert(JSON.stringify(data))
+							_this.pageinfos = data;
+							pgs = data;
+						}
+					})
+				},
+				dele() {//客户选中删除
+				let id = "";
+				let checks = $("[name=kk]");
+				let _this = this;
+				let num = 0;
+				for (var i = 0; i < checks.length; i++) {
+					if (checks.eq(i).prop("checked")) {
+						num++;
+						id = checks.eq(i).attr("kk");
+						checks.eq(i).prop("checked", false)
+					}
+				}
+				if (num == 0) {
+					alert("请选择要删除的客户");
+					return;
+				}
+					if (confirm("是否要删除?")) {
+						let _this = this;
+						jQuery.ajax('http://127.0.0.1:8080/api/kh/delClient', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.sz),
+							success: function(data) {
+								if (data.code == "200") {
+									showAlertDialog("删除成功");
+								} else {
+									showAlertDialog("删除失败")
+								}
+							}
+						})
+					}
+				},
+				dele2() {//车辆选中删除
+				let id = "";
+				let checks = $("[name=kk2]");
+				let _this = this;
+				let num = 0;
+				for (var i = 0; i < checks.length; i++) {
+					if (checks.eq(i).prop("checked")) {
+						num++;
+						id = checks.eq(i).attr("kk2");
+						checks.eq(i).prop("checked", false)
+					}
+				}
+				if (num == 0) {
+					alert("请选择要删除的车辆");
+					return;
+				}
+					if (confirm("是否要删除?")) {
+						let _this = this;
+						jQuery.ajax('http://127.0.0.1:8080/api/kh/delClientBycno', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.sz2),
+							success: function(data) {
+								if (data.code == "200") {
+									showAlertDialog("删除成功");
+								} else {
+									showAlertDialog("删除失败")
+								}
+							}
+						})
+					}
+				},
+				//		进行	//上一页//下一页操作
+				operation(pd) {//上方的上一页下一页操作
+					if (pd == 1) {
+						if (pg.hasPreviousPage) {
+							this.query(pg.prePage, pg.pageSize);
+						} else {
+							showAlertDialog("没有上一页");
+						}
+					} else if (pd == 2) {
+						if (pg.hasNextPage) {
+							this.query(pg.nextPage, pg.pageSize);
+						} else {
+							showAlertDialog("没有下一页");
+						}
+					}
+				},
+				//		进行	//上一页//下一页操作
+				operations(pd) {//下方的上一页下一页操作
+					if (pd == 1) {
+						if (pgs.hasPreviousPage) {
+							this.querys(pgs.prePage, pgs.pageSize);
+						} else {
+							showAlertDialog("没有上一页");
+						}
+					} else if (pd == 2) {
+						if (pgs.hasNextPage) {
+							this.querys(pgs.nextPage, pgs.pageSize);
+						} else {
+							showAlertDialog("没有下一页");
+						}
+					}
+				},
+				savesz() { //选中一个客户进行修改
+					let id = "";
+					let checks = $("[name=kk]");
+					let _this = this;
+					let num = 0;
+					for (var i = 0; i < checks.length; i++) {
+						if (checks.eq(i).prop("checked")) {
+							num++;
+							id = checks.eq(i).attr("kk");
+							checks.eq(i).prop("checked", false)
+						}
+					}
+					if (num == 0) {
+						alert("请选择要修改的客户");
+						return;
+					} else if (num > 1) {
+						alert("只能修改一个客户信息");
+						_this.sz=[]
+						return;
+					} else {
+						// alert(_this.sz)
+						window.sessionStorage.setItem("id",_this.sz)
+					}
+					layer.open({
+						type: 2,
+						title: '添加客户和车',
+						area: ['900px', '550px'],
+						content: '模态框子页面/客户修改.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				},
+				saveszCarupdate() { //选中一个车辆进行修改
+					let id = "";
+					let checks = $("[name=kk2]");
+					let _this = this;
+					let num = 0;
+					for (var i = 0; i < checks.length; i++) {
+						if (checks.eq(i).prop("checked")) {
+							num++;
+							id = checks.eq(i).attr("kk2");
+							checks.eq(i).prop("checked", false)
+						}
+					}
+					if (num == 0) {
+						alert("请选择要修改的车辆");
+						return;
+					} else if (num > 1) {
+						alert("只能修改一个车辆信息");
+						_this.sz2=[]
+						return;
+					} else {
+						// alert(_this.sz2)
+						window.sessionStorage.setItem("id",_this.sz2)
+					}
+					layer.open({
+						type: 2,
+						title: '添加客户和车',
+						area: ['900px', '550px'],
+						content: '模态框子页面/修改车辆.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				},
+				saveszCar() { //选中一个客户进行车辆新增
+					let id = "";
+					let checks = $("[name=kk]");
+					let _this = this;
+					let num = 0;
+					for (var i = 0; i < checks.length; i++) {
+						if (checks.eq(i).prop("checked")) {
+							num++;
+							id = checks.eq(i).attr("kk");
+							checks.eq(i).prop("checked", false)
+						}
+					}
+					if (num == 0) {
+						alert("请选客户，再进行新增");
+						return;
+					} else if (num > 1) {
+						alert("只能选择一个客户");
+						_this.sz=[];
+						return;
+					} else {
+						// alert(_this.sz)
+						window.sessionStorage.setItem("id",_this.sz)
+					}
+					layer.open({
+						type: 2,
+						title: '添加客户和车',
+						area: ['900px', '550px'],
+						content: '模态框子页面/新增车辆.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				},
+				clientCarByid(id){
+						let _this = this;
+						_this.Fyworks.pageNum = 1;
+						_this.Fyworks.pageSize = 100;
+						_this.Fyworks.id=id
+						
+						jQuery.ajax('http://127.0.0.1:8080/api/kh/ClientCarByid', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.Fyworks),
+							success: function(data) {
+								_this.pageinfos = data;
+								// alert(JSON.stringify(_this.pageinfos))
+							}
+						})
+					
+					
+				}
+
+			}
+
+		})
+	</script>
+	<script type="text/javascript">
+		/*顶部菜单操作部分*/
+		layui.use('layer', function() {
+			var layer = layui.layer;
+			$("#nac1 div").click(function() {
+				var ty = $(this).attr("ty");
+				if (ty == "add") {
+					layer.open({
+						type: 2,
+						title: '添加客户',
+						area: ['860px', '430px'],
+						content: '模态框子页面/新增客户.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				} else if (ty == "addcar") {
+					layer.open({
+						type: 2,
+						title: '添加客户和车',
+						area: ['900px', '550px'],
+						content: '模态框子页面/新增客户和车.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				} else if (ty == "modify") {
+					layer.open({
+						type: 2,
+						title: '个人密码',
+						area: ['860px', '550px'],
+						content: '发动机品牌.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				} else if (ty == "money") {
+					layer.open({
+						type: 2,
+						title: '调价',
+						area: ['550px', '150px'],
+						content: '项目调价.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				}
+			})
+		})
+		$(function() {
+			$("#kehub").hide();
+			$("#kehub2").hide();
+		})
+		$("#customer").click(function() {
+			$("#kehub").show();
+		})
+		$("#pake").click(function() {
+			$("#kehub").hide();
+		})
+		$("#customer2").click(function() {
+			$("#kehub2").show();
+		})
+		$("#pake2").click(function() {
+			$("#kehub2").hide();
+		})
+	</script>
+
+</html>

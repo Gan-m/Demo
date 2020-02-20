@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+
+	<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" />
+	<link rel="stylesheet" href="../../css/bootstrap-treeview.css" />
+	<body style="background: #f5f5f5;">
+		<div id="st">
+			<div class="container-fluid">
+				<div class="row">
+
+					<div class="col-sm-6">
+						<h2 class="form-group" style="float: left;margin-left: 10px;">班组技工</h2>
+						<div class="form-group" style="float: right;margin-top: 20px;">
+							<input type="text" class="form-control" id="exampleInputEmail2" placeholder="匹配编码/名称/名称简码">
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group" style="float: left;margin-top: 20px;" id="nac1">
+							<button type="button" class="btn btn-default checkBtn cz-btn">查询</button>
+							<button type="button" class="btn btn-default cz-btn" ty="add"><span class="glyphicon glyphicon-plus"></span>&nbsp;增加</button>
+							<button type="button" @click="saveszCarupdate" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-pencil"></span>&nbsp;修改</button>
+							<button type="button" @click="dele" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-remove"></span>&nbsp;删除</button>
+							<button type="button" class="btn btn-default cz-btn" ty="money"><span class="glyphicon glyphicon-cog"></span>&nbsp;调价</button>
+							<button type="button" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-tasks"></span>&nbsp;保存</button>
+							<button type="button" class="btn btn-default cz-btn"><span class="glyphicon glyphicon-print"></span>&nbsp;导出</button>
+							<button type="button" class="btn btn-default addBtn cz-btn">关闭</button>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-3">
+						<div id="tree" class="col-md-12" style="height: 490px;overflow: scroll;"></div>
+					</div>
+					<div class="col-sm-9">
+						<table class="table table-striped table-bordered text-center">
+							<tr>
+								<th>班组编号</th>
+								<th>班组名称</th>
+								<th>技工编号</th>
+								<th>技工姓名</th>
+								<th>性别</th>
+								<th>手机号</th>
+								<th>登录账户</th>
+								<th>操作</th>
+							</tr>
+
+							<tr v-for="(temp) in pageinfo.list">
+								<td>{{temp.teamid}}</td>
+								<td>{{temp.teamname}}</td>
+
+								<td>{{temp.artisanid}}</td>
+								<td>{{temp.aname}}</td>
+
+								<td v-if="temp.asex==0">女</td>
+								<td v-if="temp.asex==1">男</td>
+								<td>{{temp.aphone}}</td>
+								<td>{{temp.loginaid}}</td>
+								<td><input type="checkbox" :value="temp.artisanid" v-model="sz" name="kk" class="checkBtn"></td>
+							</tr>
+
+							<tfoot>
+								<tr>
+									<td colspan="8">
+										<ul class="pager">
+											<li>
+												<a href="javascript:void(0)">首页</a>
+											</li>
+											<li>
+												<a @click="shang">上一页</a>
+											</li>
+											<li>
+												<a @click="xia">下一页</a>
+											</li>
+											<li>
+												<a href="javascript:void(0)">末页</a>
+											</li>
+										</ul>
+
+									</td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.12.4.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../js/oTree.js"></script>
+	<script src="../../layui/layui.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script>
+		var pg;
+		var st = new Vue({
+			el: "#st",
+			data: {
+				Fywork: {
+					pageNum: "1",
+					pageSize: "1"
+				},
+				pageinfo: {},
+				sz: [],
+				Team: {},
+				trees: [],
+				itemId: "",
+			},
+			created: function() {
+				this.getTreeDemo();
+				this.goToPage(1, 2);
+			},
+			methods: {
+
+				goToPage(p, s) {
+					let _this = this;
+					_this.Fywork.pageNum = p;
+					_this.Fywork.pageSize = s;
+					jQuery.ajax('http://127.0.0.1:8080/api/bz/BanzuTeam_artisan', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(_this.Fywork), //提交json数组
+						success: function(data) {
+							_this.pageinfo = data;
+							pg = data;
+						}
+					})
+				},
+				//			//上一页
+				shang() {
+					if (pg.hasPreviousPage) {
+						this.goToPage(pg.prePage, pg.pageSize);
+					} else {
+						showAlertDialog("没有上一页");
+					}
+				},
+				//下一页
+				xia() {
+					if (pg.hasNextPage) {
+						this.goToPage(pg.nextPage, pg.pageSize);
+
+					} else {
+						showAlertDialog("没有下一页");
+
+					}
+				},
+				add() {
+					let _this = this;
+					_this.addStars.starsid = $("[name=id]").val();
+					_this.addStars.starsname = $("[name=name]").val();
+					_this.addStars.starsprices = $("[name=prices]").val();
+					if ($("[name=name]").val() == "") {
+						showAlertDialog("等级名称未填写")
+					} else if ($("[name=prices]").val() == "") {
+						showAlertDialog("等级权重未填写")
+					} else {
+						jQuery.ajax('http://127.0.0.1:8080/api/xj/add', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.addStars),
+							success: function(data) {
+								if (data.code == "200") {
+									showAlertDialog("新增成功");
+									_this.updateStars = "";
+									_this.query();
+
+								} else {
+									showAlertDialog("新增失败，有此等级名称")
+								}
+							}
+						})
+					}
+				},
+				dele() {
+					let _this = this;
+					jQuery.ajax('http://127.0.0.1:8080/api/bz/BanzuWardel', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(_this.sz),
+						success: function(data) {
+							if (data.code == "200") {
+								showAlertDialog("删除成功");
+								_this.goToPage(1, 2)
+							} else {
+								showAlertDialog("删除失败")
+							}
+						}
+					})
+				},
+				update(id) {
+					let _this = this;
+					jQuery.ajax('http://127.0.0.1:8080/api/xj/queryByid', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(id),
+						success: function(data) {
+							_this.updateStars = data;
+						}
+					})
+
+				},
+				saveszCarupdate() { //选中一个车辆进行修改
+					let id = "";
+					let checks = $("[name=kk]");
+					let _this = this;
+					let num = 0;
+					for (var i = 0; i < checks.length; i++) {
+						if (checks.eq(i).prop("checked")) {
+							num++;
+							id = checks.eq(i).attr("kk");
+							checks.eq(i).prop("checked", false)
+						}
+					}
+					if (num == 0) {
+						alert("请选择要修改的技工");
+						return;
+					} else if (num > 1) {
+						alert("只能修改一个技工信息");
+						return;
+					} else {
+						alert(id)
+						window.sessionStorage.setItem("id", _this.sz)
+					}
+					layer.open({
+						type: 2,
+						title: '添加客户和车',
+						area: ['900px', '550px'],
+						content: '模态框子页面/班组技工人员修改.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				},
+				getTree(node) {
+					//节点上的数据遵循如下的格式：
+					var tree = [{
+						text: "维修项目类别", //节点显示的文本值  string
+						icon: "glyphicon glyphicon-play-circle", //节点上显示的图标，支持bootstrap的图标  string
+						selectedIcon: "glyphicon glyphicon-ok", //节点被选中时显示的图标       string
+						color: "#ff0000", //节点的前景色      string
+						backColor: "#1606ec", //节点的背景色      string
+						href: "#http://www.baidu.com", //节点上的超链接
+						selectable: true, //标记节点是否可以选择。false表示节点应该作为扩展标题，不会触发选择事件。  string
+						state: { //描述节点的初始状态    Object
+							checked: true, //是否选中节点
+							/*disabled: true,*/ //是否禁用节点
+							expanded: true, //是否展开节点
+							selected: true //是否选中节点
+						},
+						tags: ['标签信息1', '标签信息2'], //向节点的右侧添加附加信息（类似与boostrap的徽章）    Array of Strings
+						nodes: node,
+					}];
+					return tree;
+				},
+				getTreeDemo() {
+					let _this = this;
+					$.ajaxSettings.async = true;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/bz/getItemTree`, function(pg) {
+						_this.trees = pg;
+						$('#tree').treeview({
+							data: _this.getTree(pg) //节点数据
+						});
+					});
+				}
+			}
+	
+		})
+		
+	</script>
+	
+	<script type="text/javascript">
+		function itemOnclick(target){
+			//找到当前节点id
+			var nodeid = $(target).attr('data-nodeid');
+			alert(nodeid);
+			var tree = $('#tree');
+			//获取当前节点对象
+			var node = tree.treeview('getNode', nodeid);
+			
+			if(node.state.expanded){ 
+			    //处于展开状态则折叠
+			    tree.treeview('collapseNode', node.nodeId);  
+			} else {
+			    //展开
+			    tree.treeview('expandNode', node.nodeId);
+			}
+		}
+		// $("#tree").on('nodeSelected', function(event, data) {
+		// 	st.itemId = data.id; //获取点击的树状id		
+		// 	console.log(st.itemId+"\t"+$('#tree').treeview('getParent', data).id);
+		// 	// if (!$('#tree').treeview('getParent', data).id) {//判断父节点的id 如果是undefined就是没有选中节点 不是就相当于选中了节点
+		// 	// 	st.repairs.ftype = 0;
+		// 	// } else {       
+		// 	// 	st.repairs.ftype = $('#tree').treeview('getParent', data).id;// $('#tree').treeview('getParent', data).id获取父节点id
+		// 	// }
+		// 	// st.repairs.xtype = data.id;
+		// 	// console.log(st.repairs.ftype+"\t"+st.repairs.xtype);
+		// 	// st.getRepair();
+		// });
+		/*顶部菜单操作部分*/
+		layui.use('layer', function() {
+			var layer = layui.layer;
+			$("#nac1 button").click(function() {
+				var ty = $(this).attr("ty");
+				if (ty == "add") {
+					layer.open({
+						type: 2,
+						title: '添加',
+						area: ['860px', '550px'],
+						content: '模态框子页面/班组技工人员新增.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				} else if (ty == "modify") {
+					layer.open({
+						type: 2,
+						title: '个人密码',
+						area: ['860px', '550px'],
+						content: '发动机品牌.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				} else if (ty == "money") {
+					layer.open({
+						type: 2,
+						title: '调价',
+						area: ['550px', '150px'],
+						content: '项目调价.html',
+						anim: 2,
+						btnAlign: 'c',
+						maxmin: true
+					})
+				}
+			})
+		})
+	</script>
+
+
+
+</html>

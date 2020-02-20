@@ -362,12 +362,12 @@ var leftNav5 = [{
 	"text": "技工管理",
 	"leftNav_id": "3",
 	"name": "班组技工",
-	"href": "html/oyxy/activity.html"
+	"href": "html/oyxy/班组技工主页面.html"
 }, {
 	"text": "技工管理",
 	"leftNav_id": "4",
 	"name": "外勤车辆",
-	"href": "html/oyxy/ItemsSys/index.html"
+	"href": "html/oyxy/外勤车辆.html"
 }, {
 	"text": "维修工具",
 	"leftNav_id": "5",
