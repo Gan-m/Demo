@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link href="../../../css/UAform.css" rel="stylesheet">
+		<script src="../../../js/jquery-1.12.4.js"></script>
+		<script src="../../../js/bootstrap.min.js"></script>
+	</head>
+	
+	<body>
+		
+		<div class="container" id="cnt">
+			<div id="st">
+			<div class="UAform-box" style="max-width:1200px; margin:0 auto;">
+				<!--控制整个表单的大小：目前是自适应大小居中，最大1200px-->
+				<form>
+					<!--整个表单禁用 class="form-disabled" -->
+					<!--UAform-content start-->
+					<div class="UAform-content">
+						<!--基本表格表单S-->
+						<div class="widget">	
+							<div class="widget-content">
+								<div id="基本信息" class="table-responsive collapse in">
+									<table class="table table-UAform">
+										<tbody>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>编号</td>
+												<td class="table-info-left">
+													<input type="text"  readonly="true" v-model="Client.cphone"/></td>
+												<td class="table-label">
+													<font class="red">*</font>选择技工</td>
+												<td class="table-info-left">
+													<select  style="width:80%;"  v-model="Client.artisanid">
+														<template v-for="(temp) in banzu">
+														<option :value="temp.artisanid">{{temp.aname}}</option>
+														</template>
+													</select>
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>客户名称</td>
+												<td class="table-info-left">
+													<input name="mc" type="text" v-model="Client.clientname" />
+													
+												</td>
+												<td class="table-label">
+													<font class="red">*</font>联系电话</td>
+												<td class="table-info-left">
+													<input name="dh" readonly="true" type="text" v-model="Client.cphone"/>
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>客户地址</td>
+												<td class="table-info-left">
+													<input name="dz" type="text"  v-model="Client.caddress" />
+												</td>
+												<td class="table-label">
+													<font class="red">*</font>客户生日</td>
+												<td class="table-info-left">
+													<input name="sr" type="date" v-model="Client.cbrind" />
+												</td>
+											</tr>
+											<tr>
+												<td class="table-label">
+													<font class="red">*</font>客户地理位置</td>
+												<td class="table-info-left">
+													所在省<select style="width:100px;">
+														<option >湖南</option>
+													</select>
+													所在市
+													<select  style="width:100px;" v-model="Client.city">
+														<option>株洲</option>
+													</select>
+													所在区
+													<select  style="width:100px;" v-model="Client.county">
+														<option>石峰</option>
+													</select>
+												</td>
+												<td class="table-label">备注</td>
+												<td class="table-info-left">
+													<input name="bz" type="text" v-model="Client.khbz" />
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="UAform-btn">
+			<button class="btn btn-save" @click="upadte">保存</button>
+			<button class="btn btn-remove" data-dismiss="modal" @click="colse">取消</button>
+		</div>
+		</div>
+	</body>
+	<script src="../../../js/jquery-1.12.4.js" type="text/javascript"></script>
+	<script src="../../../js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../../layui/layui.js" type="text/javascript"></script>
+	<script src="../../../js/jq_ajax_config.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../../js/vue.js"></script>
+	<script type="text/javascript" src="../../../js/dialog.js"></script>
+	<script>
+		var pg;
+		var st = new Vue({
+			el: "#st",
+			data: {
+				banzu:{
+					teamid:""
+				},
+				Client:{
+					clientno:"",
+					clientname:"",
+					cphone:""
+				}
+			},
+			created: function() {
+				this.queryByid();
+				this.queryBanzu();
+			},
+			methods: {
+				queryBanzu() {//子班组
+					let _this = this;
+					jQuery.ajax('http://127.0.0.1:8080/api/bz/BanzuTeam_artisan_list', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						success: function(data) {
+							_this.banzu = data;
+							// alert(JSON.stringify(data))
+						}
+					})
+				},
+				queryByid() {
+					var id=window.sessionStorage.getItem("id");
+					this.update(id)
+				},
+				upadte() {
+					let _this = this;
+					_this.Client.clientno=_this.Client.cphone;
+					// alert(_this.Client.clientno)
+					if ($("[name=mc]").val() == "") {
+						alert("名称未填写")
+					} else if ($("[name=dh]").val() == "") {
+						alert("电话未填写")
+					} else if ($("[name=dz]").val() == "") {
+						alert("地址未填写")
+					} else if ($("[name=sr]").val() == "") {
+						alert("生日未填写")
+					} else {			
+						alert(JSON.stringify(_this.Client))
+						jQuery.ajax('http://127.0.0.1:8080/api/kh/updateClient', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.Client),
+							success: function(data) {
+								if (data.code == "200") {
+									alert("修改成功");
+									var index = parent.layer.getFrameIndex(window.name);
+									parent.layer.close(index);
+								} else {
+									aler("修改失败，有此等级名称")
+								}
+							}
+						})
+					}
+				},
+				colse(){
+						var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index);
+				},
+				update(id) {
+					let _this = this;
+					jQuery.ajax('http://127.0.0.1:8080/api/kh/clientByid', {
+						type: "post",
+						dataType: "json",
+						contentType: "application/json", //非常重要
+						data: JSON.stringify(id),
+						success: function(data) {
+							_this.Client = data;
+						}
+					})
+				},
+				upd() {
+					let _this = this;
+					if ($("[name=name]").val() == "") {
+						showAlertDialog("等级名称未填写")
+					} else if ($("[name=prices]").val() == "") {
+						showAlertDialog("等级权重未填写")
+					} else {
+						jQuery.ajax('http://127.0.0.1:8080/api/xj/upd', {
+							type: "post",
+							dataType: "json",
+							contentType: "application/json", //非常重要
+							data: JSON.stringify(_this.updateStars),
+							success: function(data) {
+								if (data.code == "200") {
+									showAlertDialog("修改成功");
+									_this.goToPage(p, s);
+									_this.updateStars = "";
+								} else {
+									showAlertDialog("修改失败，无此编号")
+								}
+							}
+						})
+					}
+				}
+	
+			}
+	
+		})
+	</script>
+</html>

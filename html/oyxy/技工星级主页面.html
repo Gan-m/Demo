@@ -38,14 +38,35 @@
 						<td>工/时</td>
 						<td>操作</td>
 					</tr>
-					<template v-for="(temp) in Stars">
+					<template v-for="(temp) in Stars.list">
 						<tr>
-							<td @click="update(temp.starsid)">{{temp.starsid}}</td>
-							<td>{{temp.starsname}}</td>
+							<td >{{temp.starsid}}</td>
+							<td @click="update(temp.starsid)">{{temp.starsname}}</td>
 							<td>{{temp.starsprices}}</td>
 							<td><input type="checkbox" :value="temp.starsid" v-model="sz" name="kk" class="checkBtn"></td>
 						</tr>
 					</template>
+					<tfoot>
+						<tr>
+							<td colspan="8">
+								<ul class="pager">
+									<li>
+										<a  href="javascript:void(0)">首页</a>
+									</li>
+									<li>
+										<a  @click="operation(1)">上一页</a>
+									</li>
+									<li>
+										<a  @click="operation(2)">下一页</a>
+									</li>
+									<li>
+										<a href="javascript:void(0)">末页</a>
+									</li>
+								</ul>
+					
+							</td>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
@@ -60,6 +81,10 @@
 		var st = new Vue({
 			el: "#st",
 			data: {
+				Fywork: {
+					pageNum: "1",
+					pageSize: "3"
+				},
 				pageinfo: {
 					cid: "",
 					cname: "",
@@ -81,18 +106,22 @@
 				updateStars: {}
 			},
 			created: function() {
-				this.query()
+				this.goToPage(1, 3);
 
 			},
 			methods: {
-				query() {
+				goToPage(p, s) {
 					let _this = this;
+					_this.Fywork.pageNum = p;
+					_this.Fywork.pageSize = s;
 					jQuery.ajax('http://127.0.0.1:8080/api/xj/query', {
 						type: "post",
 						dataType: "json",
 						contentType: "application/json", //非常重要
+						data: JSON.stringify(_this.Fywork),
 						success: function(data) {
 							_this.Stars = data;
+							pg=data
 						}
 					})
 				},
@@ -115,8 +144,7 @@
 								if (data.code == "200") {
 									showAlertDialog("新增成功");
 									_this.updateStars = "";
-									_this.query();
-
+									_this.goToPage(1, 3);
 								} else {
 									showAlertDialog("新增失败，有此等级名称")
 								}
@@ -135,7 +163,7 @@
 						success: function(data) {
 							if (data.code == "200") {
 								showAlertDialog("删除成功");
-								_this.query();
+								_this.goToPage(1, 3) ;
 							} else {
 								showAlertDialog("删除失败")
 							}
@@ -151,6 +179,7 @@
 						data: JSON.stringify(id),
 						success: function(data) {
 							_this.updateStars = data;
+							// alert(JSON.stringify(_this.updateStars))
 						}
 					})
 
@@ -170,7 +199,7 @@
 							success: function(data) {
 								if (data.code == "200") {
 									showAlertDialog("修改成功");
-									_this.query();
+									_this.goToPage(p, s);
 									_this.updateStars = "";
 								} else {
 									showAlertDialog("修改失败，无此编号")
@@ -178,7 +207,23 @@
 							}
 						})
 					}
-				}
+				},
+				//	进行	//上一页//下一页操作
+			operation(pd) {
+				if(pd==1){
+					if(pg.hasPreviousPage) {
+						this.goToPage(pg.prePage, pg.pageSize);
+					} else {
+						showAlertDialog("没有上一页");
+					}
+				}else if(pd==2){
+					if(pg.hasNextPage) {
+						this.goToPage(pg.nextPage, pg.pageSize);
+					} else {
+						showAlertDialog("没有下一页");
+					}
+				}	
+			}
 
 			}
 
