@@ -208,7 +208,7 @@
 				sto: [],
 				bm:[],
 				employee: {
-					storeid: "1001"
+					storeid: "000000"
 				},
 				emp: {
 					employeeid: "",
@@ -237,7 +237,7 @@
 			},
 			created: function() {
 				let _this = this;
-				jQuery.getJSON("http://127.0.0.1:8080/api/dep/depBm",function(da){
+				jQuery.getJSON("http://127.0.0.1:8080/api/dep/depBM",function(da){
 					_this.bm=da;
 				});
 				jQuery.getJSON(`http://127.0.0.1:8080/api/pro/pros`, function(data) {

@@ -170,25 +170,20 @@ var leftNav3 = [{
 	"name": "车辆资料",
 	"href": "html/oyxy/students.html"
 }, {
-	"text": "会员管理",
+	"text": "会员积分",
 	"leftNav_id": "13",
 	"name": "积分规则",
 	"href": "html/oyxy/roles.html"
 }, {
-	"text": "会员管理",
+	"text": "会员积分",
 	"leftNav_id": "24",
 	"name": "会员变迁",
 	"href": "html/oyxy/index.html"
 }, {
-	"text": "会员管理",
+	"text": "会员积分",
 	"leftNav_id": "26",
 	"name": "积分赠送",
 	"href": "html/oyxy/messageList.html"
-},{
-	"text": "会员管理",
-	"leftNav_id": "99",
-	"name": "会员查询",
-	"href": "html/yw/会员查询.html"
 }, {
 	"text": "客户回访",
 	"leftNav_id": "3",
@@ -305,12 +300,12 @@ var leftNav4 = [{
 	"text": "主数据",
 	"leftNav_id": "24",
 	"name": "商品资料",
-	"href": "html/mj/kecheng/index.html"
+	"href": "html/mj/ComInformation.html"
 }, {
 	"text": "主数据",
 	"leftNav_id": "26",
 	"name": "供货单位",
-	"href": "html/mj/messageList.html"
+	"href": "html/mj/Supplier.html"
 }, {
 	"text": "卡定义",
 	"leftNav_id": "3",
@@ -342,17 +337,17 @@ var leftNav5 = [{
 	"text": "员工资料",
 	"leftNav_id": "2",
 	"name": "岗位定义",
-	"href": "html/qyw/students.html"
+	"href": "html/qyw/gangweidingyi.html"
 }, {
 	"text": "员工资料",
 	"leftNav_id": "13",
 	"name": "离职登记",
-	"href": "html/qyw/roles.html"
+	"href": "html/qyw/lizhidengji.html"
 }, {
 	"text": "员工资料",
 	"leftNav_id": "24",
 	"name": "通讯名录",
-	"href": "html/qyw/kecheng/index.html"
+	"href": "html/qyw/tongxunminglu.html"
 }, {
 	"text": "技工管理",
 	"leftNav_id": "26",

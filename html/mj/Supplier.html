@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="../../css/bootstrap-treeview.css" />
+		<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.css" />
+		<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css" />
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" />
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style>
+		#ctx{
+			margin:0 auto
+		}	
+		.daohang{
+			margin-top: 10px;
+		}
+		.daohang ul li{
+			display: inline-block;
+			font-size:100%;
+		}
+				
+		.myrow {
+				display: flex;
+				flex-direction: row;
+				/*margin-left:1em;*/
+		}
+			
+		.xxxx {
+				height: 2px;
+				background: #999999;
+				margin-top: 16px;
+				width: 2em;
+				margin-left: 1em;
+				margin-right: 1em;
+			}
+		.row{
+			margin-right: 0px;
+			margin-left: 0px;
+		}
+		th{
+			text-align: center;
+		}
+	</style>
+
+	<body style="background:#f5f5f5;">
+		<div id="ctx">
+			<div class="row">
+				<div class="container col-md-4" style="margin-left: -45px;">
+					<div class="text-center">
+						<h2 style="color:#D58512;">供货单位</h2>
+					</div>
+					<div class="text-center"><span class=" label label-warning">Supplier</span></div>
+				</div>
+
+				<div class="col-md-6" style="margin-top: 15px; margin-left: 170px;">
+					<div class="input-group">
+						<input type="text" class="form-control" v-model="option" placeholder="匹配名称/联系人/简码/手机 +号实现双条件查询">
+						<span class="input-group-btn">
+							<button class="btn btn-default" @click="getFirmByOption" type="button" style="background-color: #F0AD4E; color: white;font-weight: bold;">搜索</button>
+						</span>
+					</div><!-- /input-group -->
+				</div><!-- /.row -->
+			</div>
+
+			<div class="row">
+				<div class="daohang  col-md-offset-7">
+					<ul>
+						<li style="margin-left: 88px;"><button type="button" id="myButton" data-loading-text="Loading..." class="btn btn-success"
+							 autocomplete="off" data-toggle="modal" data-target="" @click="show()">增加厂商资料</button></li>
+						<li><button type="button" id="myButton" @click="showSuperlier" data-loading-text="Loading..." class="btn btn-success" autocomplete="off">编辑厂商资料</button></li>
+						<li><button type="button" id="myButton" @click="remove" data-loading-text="Loading..." class="btn btn-success" autocomplete="off">移除厂商信息</button></li>
+					</ul>
+				</div>
+			</div>
+
+			<!--树形-->
+			<div class="row">
+				<!--  <div id="tree" class="col-md-3 treeview" style="height: 400px; overflow: scroll;"></div>-->
+				<div id="" class="col-md-3 treeview" style="height: 400px; overflow: scroll;">
+					<ul class="list-group">
+						<li class="list-group-item node-tree node-checked" @click="find('',-1)" data-nodeid="0" style="color:#ff0000;background-color:#1606ec;">
+							<span class="icon expand-icon glyphicon glyphicon-minus"></span>
+							<span class="icon node-icon glyphicon glyphicon-play-circle"></span>供应商区域分布
+						</li>
+						<li class="list-group-item node-tree" name="city"  v-for="(temp,i) in trees" @click="find(temp.text,i,temp.id)" :data-nodeid="temp.id" style="color:undefined;background-color:undefined;">
+							<span class="indent"></span><span class="icon glyphicon"></span><span class="icon node-icon"></span>
+							 {{temp.text}}
+						</li>
+					</ul>
+				</div>
+				<div class="col-md-9" style="height: 250px;overflow: scroll;">
+					<table class="table table-striped table-bordered text-center">
+						<tr>
+							<th>厂商代码</th>
+							<th>厂商名称</th>
+							<th>所在城市</th>
+							<th>地址</th>
+							<th>网址</th>
+							<th>公司手机号</th>
+							<th>供货备注</th>
+							<th>操作</th>
+						</tr>
+						<tr v-for="(temp,i) in firms">
+							<td>{{temp.firmno}}</td>
+							<td>{{temp.firmname}}</td>
+							<td>{{temp.scity}}</td>
+							<td>{{temp.firmaddress}}</td>
+							<td>{{temp.url}}</td>
+							<td>{{temp.gsphone}}</td>
+							<td>{{temp.firmsevenst}}</td>
+							<td><input type="checkbox" class="checkBtn" name="selOne1" :no="temp.firmno"></td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-md-9" style="height: 190px;overflow: scroll;">
+					<h4>联系人</h4>
+					<table class="table table-striped table-bordered text-center">
+						<tr>
+							<th>厂商名称</th>
+							<th>联系人</th>
+							<th>联系电话</th>
+						</tr>
+						<tr v-for="(temp,i) in firms">
+							<td>{{temp.firmname}}</td>
+							<td>{{temp.lxr}}</td>
+							<td>{{temp.lxrphone}}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<!-- 增加模态框 -->
+			<div class="modal fade" id="insert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document" style="width: 1100px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="myModalLabel">新增厂商信息</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-inline">
+								<div class="row" style="margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="spbm">城市ID</span>
+										<input type="text" class="form-control" name="cityid" v-model="superlier.cityid" disabled="disabled" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="spmc">所在城市</span>
+										<input type="text" class="form-control" name="cityname" v-model="superlier.scity" disabled="disabled" aria-describedby="sizing-addon3">
+									</div>
+								</div>
+			
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="csbm">厂商编码</span>
+										<input type="text" class="form-control" v-model="superlier.firmno" placeholder="厂商编码" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="csmc">厂商名称</span>
+										<input type="text" class="form-control" v-model="superlier.firmname" placeholder="厂商名称" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="txm">厂商地址</span>
+										<input type="text" class="form-control" v-model="superlier.firmaddress" placeholder="厂商地址" aria-describedby="sizing-addon3">
+									</div>
+			
+								</div>
+			
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt1">网址</span>
+										<input type="text" class="form-control" v-model="superlier.url" placeholder="网址" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt2">公司电话</span>
+										<input type="text" class="form-control" v-model="superlier.gsphone" placeholder="公司电话" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-2">
+										<span class="input-group-addon" id="iqt3">联系人</span>
+										<input type="text" class="form-control" v-model="superlier.lxr" placeholder="联系人" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt4">联系电话</span>
+										<input type="text" class="form-control" v-model="superlier.lxrphone" placeholder="联系电话" aria-describedby="sizing-addon3">
+									</div>
+								</div>
+			
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt1">供货备注</span>
+										<input type="text" class="form-control" v-model="superlier.firmsevenst" placeholder="供货备注" aria-describedby="sizing-addon3">
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+							<button type="button" @click="addSuper" class="btn btn-primary">提交</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 修改模态框 -->
+			<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document" style="width: 1100px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="myModalLabel">厂商资料编辑</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-inline">
+								<div class="row" style="margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="spbm">城市ID</span>
+										<input type="text" class="form-control" name="cityid" v-model="superlier.cityid" disabled="disabled" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="spmc">所在城市</span>
+										<input type="text" class="form-control" name="cityname" v-model="superlier.scity" disabled="disabled" aria-describedby="sizing-addon3">
+									</div>
+								</div>
+			
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="csbm">厂商编码</span>
+										<input type="text" class="form-control" v-model="superlier.firmno" placeholder="厂商编码" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="csmc">厂商名称</span>
+										<input type="text" class="form-control" v-model="superlier.firmname" placeholder="厂商名称" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="txm">厂商地址</span>
+										<input type="text" class="form-control" v-model="superlier.firmaddress" placeholder="厂商地址" aria-describedby="sizing-addon3">
+									</div>
+			
+								</div>
+			
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt1">网址</span>
+										<input type="text" class="form-control" v-model="superlier.url" placeholder="网址" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt2">公司电话</span>
+										<input type="text" class="form-control" v-model="superlier.gsphone" placeholder="公司电话" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-2">
+										<span class="input-group-addon" id="iqt3">联系人</span>
+										<input type="text" class="form-control" v-model="superlier.lxr" placeholder="联系人" aria-describedby="sizing-addon3">
+									</div>
+			
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt4">联系电话</span>
+										<input type="text" class="form-control" v-model="superlier.lxrphone" placeholder="联系电话" aria-describedby="sizing-addon3">
+									</div>
+								</div>
+			
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt1">供货备注</span>
+										<input type="text" class="form-control" v-model="superlier.firmsevenst" placeholder="供货备注" aria-describedby="sizing-addon3">
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" @click="clearSuper" data-dismiss="modal">关闭</button>
+							<button type="button" @click="modifySuperlier" class="btn btn-primary">提交</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+		<script type="text/javascript" src="../../js/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-treeview.js"></script>
+		<script type="text/javascript" src="../../js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+		<script type="text/javascript" src="../../js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+		<script type="text/javascript" src="../../js/bootstrap-datetimepicker.zh-CN.js"></script>
+		<script type="text/javascript" src="../../js/vue.js"></script>
+		<script type="text/javascript">
+			var superlier = new Vue({
+				el: "#ctx",
+				data: {
+					trees: [],
+					firms: [],
+					city:{
+						id:"",
+						name:""
+					},
+					superlier:{
+						firmno:"",
+						cityid:"",
+						firmname:"",
+						firmaddress:"",
+						url:"",				
+						gsphone:"",				
+						lxr:"",					
+						lxrphone:"",
+						scity:"",
+						firmsevenst:"",
+					},
+					option:"",
+				},
+				methods: {
+					remove() {
+						let nos=[];
+						let checks = $("[name=selOne1]");
+						let _this = this;
+						for (var i = 0; i < checks.length; i++) {
+							if (checks.eq(i).prop("checked")) {
+								nos.push(checks.eq(i).attr("no"));
+								checks.eq(i).prop("checked",false);
+							}
+						}
+						if(nos.length==0){
+							alert("请先选择要删除的选项");
+							return;
+						}
+						if (confirm("确认删除吗？")) {
+							jQuery.ajax(`http://127.0.0.1:8080/api/supers/getShopByFirm`, {
+								type: 'post',
+								data: JSON.stringify(nos),
+								contentType: "application/json",
+								success(data) {
+									if (data.code == "200") {
+										_this.delete(nos);
+									}else{
+										alert("此供货商已被引用，无法删除");
+									}
+								}
+							});
+						}
+					},
+					delete(nos){
+						let _this=this;
+						jQuery.ajax(`http://127.0.0.1:8080/api/supers/super/delete`, {
+							type: 'post',
+							data: JSON.stringify(nos),
+							contentType: "application/json",
+							success(data) {
+								if (data.code == "200") {
+									alert('删除成功');
+									if(_this.city.name!=""){
+										_this.getFirm(_this.city.name);
+									}else{
+										_this.getFirm(null);
+									}
+								}
+							}
+						});
+					},
+					clearSuper(){
+						for(x in this.superlier){
+							this.superlier[x]="";
+						}
+						this.superlier.cityid=this.city.id;
+						this.superlier.scity=this.city.name;
+					},
+					showSuperlier(){
+						let id="";
+						let checks = $("[name=selOne1]");
+						let _this = this;
+						let num=0;
+						for (var i = 0; i < checks.length; i++) {
+							if (checks.eq(i).prop("checked")) {
+								num++;
+								id=checks.eq(i).attr("no");
+								checks.eq(i).prop("checked",false);
+							}
+						}
+						if(num==0){
+							alert("请选择要修改的厂商信息");
+							return;
+						}else if(num>1){
+							alert("一次只能修改一个厂商信息");
+							return;
+						}else{
+							$("#update").modal("show");
+							jQuery.getJSON(`http://127.0.0.1:8080/api/supers/getFirmByNo/${id}`, function(pg) {
+								_this.superlier=pg[0];
+							});
+						}
+					},
+					modifySuperlier(){
+						let _this = this;
+						jQuery.ajax(`http://127.0.0.1:8080/api/supers/super/modify`, {
+							type: 'post',
+							data:JSON.stringify(_this.superlier),
+							contentType: "application/json",
+							success(data) {
+								if (data.code == "200") {
+									alert('修改成功');
+									$("#update").modal("hide");
+									_this.clearSuper();
+									if(_this.city.name!=""){
+										_this.getFirm(_this.city.name);
+									}else{
+										_this.getFirm(null);
+									}
+								}
+							}
+						});
+					},
+					find(name,num,id) {
+						$("[name=city]").css("background","#ffffff");
+						$("[name=city]").removeClass("glyphicon glyphicon-ok");
+						if(num!=-1){
+							$("[name=city]").eq(num).addClass("glyphicon glyphicon-ok");
+							$("[name=city]").eq(num).css("background","#428bca");
+						}
+						this.city.id=id;
+						this.city.name=name;
+						this.superlier.cityid=id;
+						this.superlier.scity=name;
+						
+						this.getFirm(name);
+					},
+					addSuper(){
+						let _this = this;
+						
+						for(x in this.superlier){
+							if(!this.superlier[x]){
+								alert("内容不允许为空");
+								return;
+							}
+						}
+						jQuery.getJSON(`http://127.0.0.1:8080/api/supers/getFirmByNo/${_this.superlier.firmno}`, function(pg) {
+							if (pg.length==0) {
+								_this.addSuperOne();
+							} else {
+								alert("此厂商编号已存在");
+							}
+						});
+						
+					},
+					addSuperOne(){
+						let _this = this;
+						jQuery.ajax(`http://127.0.0.1:8080/api/supers/super/add`, {
+							type: 'post',
+							data:JSON.stringify(_this.superlier),
+							contentType: "application/json",
+							success(data) {
+								if (data.code == "200") {
+									alert('新增成功');
+									for(x in _this.superlier){
+										if(x=="scity" || x=="cityid"){
+											continue;
+										}
+										_this.superlier[x]="";
+									}
+									$("#insert").modal("hide");
+									_this.getFirm(_this.superlier.scity);
+								}
+							}
+						});
+					},
+					show(){
+						if(!this.superlier.cityid || !this.superlier.scity){
+							alert("请选择所在城市");
+							return;
+						}
+						$("#insert").modal("show");
+					},
+					getFirm(name) {
+						let _this = this;
+						if (!name) {
+							name=null;
+						}
+						jQuery.getJSON(`http://127.0.0.1:8080/api/supers/getFirm/${name}`, function(pg) {
+							_this.firms = pg;
+						});
+					},
+					getFirmByOption() {
+						let _this = this;
+						let name = null;
+						if (this.option != "") {
+							name = this.option;
+						}
+						jQuery.getJSON(`http://127.0.0.1:8080/api/supers/getFirmByOption/${name}`, function(pg) {
+							_this.firms = pg;
+						});
+					},
+					getTree(node) {
+						//节点上的数据遵循如下的格式：
+						var tree = [{
+							text: "供应商区域分布", //节点显示的文本值  string
+							icon: "glyphicon glyphicon-play-circle", //节点上显示的图标，支持bootstrap的图标  string
+							selectedIcon: "glyphicon glyphicon-ok", //节点被选中时显示的图标       string
+							color: "#ff0000", //节点的前景色      string
+							backColor: "#1606ec", //节点的背景色      string
+							href: "#http://www.baidu.com", //节点上的超链接
+							selectable: true, //标记节点是否可以选择。false表示节点应该作为扩展标题，不会触发选择事件。  string
+							state: { //描述节点的初始状态    Object
+								checked: true, //是否选中节点
+								/*disabled: true,*/ //是否禁用节点
+								expanded: true, //是否展开节点
+								selected: true //是否选中节点
+							},
+							tags: ['标签信息1', '标签信息2'], //向节点的右侧添加附加信息（类似与boostrap的徽章）    Array of Strings
+							nodes: node,
+						}];
+						return tree;
+					},
+					getTreeDemo() {
+						let _this = this;
+						$.ajaxSettings.async = false;
+						jQuery.getJSON(`http://127.0.0.1:8080/api/supers/getFunTree`, function(pg) {
+							_this.trees = pg;
+						});
+					}
+				},
+				mounted() {
+					this.getTreeDemo();
+					this.getFirm();
+					let _this = this;
+					$('#tree').treeview({
+						data: this.getTree(_this.trees) //节点数据
+					});
+				}
+			})
+			$(".time").datetimepicker({
+				language: "zh-CN",
+				format: "yyyy-mm-dd", //显示格式  需要時分秒就加上 hh:ii:ss
+				minView: "month", //设置只显示到月份
+				initialDate: new Date(), //初始化当前日期
+				autoclose: true, //选中自动关闭
+				todayBtn: true, //显示今日按钮
+				clearBtn: true,
+				pickerPosition: "bottom-left"
+			});
+		</script>
+	</body>
+</html>

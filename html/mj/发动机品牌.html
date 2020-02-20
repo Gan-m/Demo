@@ -33,7 +33,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-sm-5  col-sm-offset-3">
+				<div class="col-sm-5  col-sm-offset-3" style="height: 400px;overflow: scroll;">
 					<table class="table table-striped table-bordered text-center" id="mytab">
 						<tr>
 							<th>分类代码</th>
@@ -110,6 +110,10 @@
 							nos.push(checks.eq(i).attr("no"));
 							checks.eq(i).prop("checked",false);
 						}
+					}
+					if(nos.length==0){
+						alert("请先选择要删除的选项");
+						return;
 					}
 					if (confirm("确认删除吗？")) {
 						jQuery.ajax(`http://127.0.0.1:8080/api/engines/delete`, {

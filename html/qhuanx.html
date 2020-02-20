@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>权限</title>
+		<link rel="stylesheet" href="../css/index.css" />
+		<script src="../js/jquery-1.12.4.js"></script>
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<style>
+		  .el-aside {
+		    background-color: #D3DCE6;
+		    color: #333;
+		    text-align: center;
+		    line-height: normal;
+		  }
+		  
+		  .el-main {
+		    background-color: #E9EEF3;
+		    color: #333;
+		  }
+		  
+		  body > .el-container {
+		    margin-bottom: 40px;
+		  }
+		  
+		  .el-container:nth-child(5) .el-aside,
+		  .el-container:nth-child(6) .el-aside {
+		    line-height: 260px;
+		  }
+		  
+		  .el-container:nth-child(7) .el-aside {
+		    line-height: 320px;
+		  }
+		  
+		  .el-checkbox{
+			  margin-right: 25px;
+		  }
+		  .kaisqx{
+		  	box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+		  	background-color: white;
+		 	border-radius: 30px;
+		 	margin-bottom: 30px;
+		  }
+		  
+		  .qxto .el-checkbox__label{
+		  	font-size: 20px;
+		  }
+		  
+		  h2{
+			  margin-top: -10px;
+		  }
+		  .kaisqx .qxto{
+		  	text-indent: 20px;
+		  }
+		  
+		  .child .el-checkbox{
+		  	margin-bottom: 10px;
+		  }
+		  
+		  .qxto .el-checkbox-button__inner{
+		  	margin: 10px 0px;
+		  	width: 200px;
+		  	border-radius:0 ;
+		  }
+		  
+		</style>
+	</head>
+		<body>
+			<div id="qxsj">
+			<el-container>
+			  <el-container>
+			    <el-aside width="250px">
+					<el-form>
+						<h3>部门栏</h3>
+					  <el-form-item>
+					    <el-select v-model="region" placeholder="请选择管理部门" @change="zwfz()">
+						<template v-for="(tes,i) in dep">
+							<el-option :label=tes.depnames  :value=tes.departmentid>{{tes.depnames}}</el-option>
+						 </template>
+					    </el-select>
+					  </el-form-item>
+					  <h4>职位</h4>
+					  <div style="box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);border-radius: 20px;margin:0px 20px;">
+						  <template v-for="(tj,j) in depst">
+						  <el-button type="warning" @click="fuyuzhiw(tj)" style="margin: 5px;">{{tj.depnames}}</el-button><br />
+						  </template>
+					  </div>
+					 </el-form>
+				</el-aside>
+			    <el-main >
+			    	<h2>当前管理职位：<span style="color: #409EFF;">{{dname}}</span>
+			    		&nbsp;&nbsp;&nbsp;&nbsp;
+					    <el-button type="success" @click="chozhi()">重置</el-button>
+			    	</h2>
+			    	
+			    	<template v-for="(te,i) in childshow">
+						<template v-if="te.fpid==0" >
+			    		<el-col :span="7" :offset="1">
+			    		<div class="kaisqx" >
+							  	<div class="qxto">
+							  		<div>
+								    <el-checkbox-group v-model="fuji" style="width: 200px;">
+									  <template v-if="te.fpid==0">
+											<el-checkbox-button v-model="fujis" :label=te.fid>{{te.fname}}</el-checkbox-button>
+									  </template>
+								    </el-checkbox-group>
+								  </div>
+							  	</div>
+							  	<div style="text-align: center;margin: 5px;" class="child">
+							  		<template v-for="(t,j) in childshow">
+										<template v-if="t.fpid==te.fid">
+												<el-checkbox v-model="checkList" :label=t.fid   border size="medium">{{t.fname}}</el-checkbox>
+										</template>
+							  		</template>
+							  	</div>
+						</div>
+						</el-col>
+						 </template>
+					</template>
+						
+					<template >
+						<el-col :span="15" :offset="1">
+						<div class="kaisqx" style="height: 100px;text-align: center;line-height: 100px;">
+							 <el-button type="primary" @click="ckid()">确 定 赋 予 权 限</el-button>
+							 <el-button type="info" >取 消</el-button>
+						</div>
+						</el-col>
+					</template>
+						
+			    </el-main>
+			  </el-container>
+			</el-container>
+			</div>
+		</body>
+	<script type="text/javascript" src="../js/index2.js" ></script>
+	<script>
+		var qxsj=new Vue({
+			data:{
+				region:"",
+				did:0,
+				dname:"",
+				dep:[],//部门
+				deps:[],//职位
+				depst:[],//临时职位
+				fuji:[],
+				fujis:[],//主菜单是否选中
+				checkList: [],//子菜单是否选中
+				Funshow:[],//父级菜单列表
+				childshow:[],//子集菜单
+				tree:[]
+			},methods:{
+				zwfz(){//根据部门查询职位
+					this.depst=[];
+					_this=this;
+					if(this.region!=""){
+						for(let i=0;i<this.deps.length;i++){
+							if(this.deps[i].depfaid==this.region){
+								_this.depst.push(this.deps[i]);
+							}
+						}
+					} 
+				},fuyuzhiw(tj){
+					this.dname=tj.depnames;
+					this.did=tj.departmentid;
+					let _this=this;
+					$.ajaxSettings.async = false;
+					jQuery.getJSON("http://127.0.0.1:8080/api/employee/getpremlist",{depid:this.did},function(da){
+						_this.tree=da;
+					});
+					$.ajaxSettings.async = true;
+					_this.checkList=[];
+					_this.fuji=[];
+					let tres=this.tree;
+					for(let i=this.tree.length-1;i>=0;i--){
+						for(let j=0;j<this.childshow.length;j++){
+							//判断父级选中
+							if(this.childshow[j].fpid==0){
+								if(this.tree[i].fid==this.childshow[j].fid){
+									_this.fuji.push(this.childshow[j].fid);
+								}
+							}
+							//判断子集选中
+							if(this.tree[i].fid==this.childshow[j].fid){
+								for(let k=0;k<this.fuji.length;k++){
+									if(this.tree[i].fid==this.childshow[j].fid){
+										if(this.tree[i].fid==this.fuji[k]){
+											tres.splice(i,1);
+										}
+									}
+								}
+							}
+						}
+					}
+					for(let i=0;i<tres.length;i++){
+						_this.checkList.push(tres[i].fid);
+					}
+				},
+				getdep(){
+					let _this=this;
+					jQuery.getJSON("http://127.0.0.1:8080/api/dep/depBM",function(da){
+						_this.dep=da;
+					});
+					jQuery.getJSON("http://127.0.0.1:8080/api/dep/deps",function(da){
+						_this.deps=da;
+					});
+				},
+				getlist(){
+					let _this=this;
+					jQuery.getJSON("http://127.0.0.1:8080/api/employee/getfunlist",function(da){
+					$.each(da,function(i,temp){
+					if(temp.fid==0){
+						_this.Funshow.push(temp);
+								}
+						})
+					_this.childshow=da;
+					});
+				},
+				chozhi(){
+						this.checkList=[];
+						this.fuji=[];
+				},
+				ckid(){//赋予权限
+					this.$confirm('是否赋值此职位权限, 是否继续?', '提示', {
+					          confirmButtonText: '确定',
+					          cancelButtonText: '取消',
+					          type: 'warning'
+					        }).then(() => {
+								let depqx=[];
+								//判断是否选中职业
+								if(this.did==0){
+									return;
+								}
+								
+								//赋值职业
+								depqx.push(this.did);
+								for(let j=0;j<this.fuji.length;j++){
+									depqx.push(this.fuji[j]);
+								}
+								for(let j=0;j<this.checkList.length;j++){
+									depqx.push(this.checkList[j]);
+								}
+								
+								if(depqx!=""){
+									$.ajax({
+										url:"http://127.0.0.1:8080/api/employee/addqxs",
+										type : "post",
+										dataType : "json",
+										contentType : "application/json",//非常重要
+										data : JSON.stringify(depqx),//提交json数组
+										success : function(da){
+											if (da.code=='200') {
+											}
+										}
+										})
+								}else{
+									alert("请选择");
+								}
+								
+					          this.$message({
+					            type: 'success',
+					            message: '赋予成功!'
+					          });
+					        }).catch(() => {
+					          this.$message({
+					            type: 'info',
+					            message: '已取消操作'
+					          });          
+					        });
+				}
+			},created: function() {
+					this.getlist();
+					this.getdep();
+				}
+		}).$mount("#qxsj");
+	</script>
+</html>

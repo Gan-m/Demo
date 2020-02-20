@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.css" />
+		<link rel="stylesheet" href="../../css/bootstrap-datetimepicker.min.css" />
+		<link rel="stylesheet" href="../../css/bootstrap.min.css" />
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<style>
+		#shop{
+			margin:0 auto
+		}
+		.daohang{
+			margin-top: 30px;
+		}
+		
+		.daohang ul li{
+			display: inline-block;
+			font-size:100%;
+		}		
+		.myrow {
+				display: flex;
+				flex-direction: row;
+				/*margin-left:1em;*/
+		}		
+		.xxxx {
+				height: 2px;
+				background: #999999;
+				margin-top: 16px;
+				width: 2em;
+				margin-left: 1em;
+				margin-right: 1em;
+			}
+		.row{
+			margin-right: 0px;
+			margin-left: 0px;
+		}
+		th{
+			text-align: center;
+		}s
+	</style>
+
+	<body>
+		<div id="shop">
+			<div class="row">
+				<div class="container col-md-4" style="margin-left: -40px;">
+					<div class="text-center">
+						<h2 style="color:#D58512;">商品资料</h2>
+					</div>
+					<div class="text-center"><span class=" label label-warning">Commodity information</span></div>
+				</div>
+
+				<div class="col-md-6" style="margin-top: 15px; margin-left: 180px;">
+					<div class="input-group">
+						<input type="text" class="form-control" v-model="option" placeholder="厂商编码/商品编码/商品名称/商品品牌">
+						<span class="input-group-btn">
+							<button class="btn btn-default" @click="getPage(1)" type="button" style="background-color: #F0AD4E; color: white;font-weight: bold;">搜索</button>
+						</span>
+					</div><!-- /input-group -->
+				</div><!-- /.row -->
+			</div>
+	
+			<div class="row">
+				<div class="daohang container col-md-7 col-md-offset-1" style="margin-left: 90px;">
+					<ul>
+						<li><button type="button" id="myButton" data-loading-text="Loading..." class="btn btn-success" autocomplete="off"
+							 data-toggle="modal" data-target="#insert">新增商品资料</button></li>
+						<li><button type="button" data-loading-text="Loading..." @click="modifyShop" class="btn btn-success" autocomplete="off">编辑商品资料</button></li>
+						<li><button type="button" data-loading-text="Loading..." @click="modifyState(8)" class="btn btn-success" autocomplete="off">商品下架</button></li>
+						<li><button type="button" data-loading-text="Loading..." @click="modifyState(7)" class="btn btn-success" autocomplete="off">商品上架</button></li>
+						<li><button type="button" data-loading-text="Loading..." @click="firstPage" class="btn btn-success" autocomplete="off">首页</button></li>
+						<li><button type="button" v-if="page.hasPreviousPage" @click="prePage" class="btn btn-success">上一页</button></li>
+						<li><button type="button" v-if="page.hasNextPage" @click="nextPage" class="btn btn-success">下一页</button></li>
+						<li><button type="button" data-loading-text="Loading..." @click="lastPage" class="btn btn-success" autocomplete="off">尾页</button></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-10 col-md-offset-1">
+					<table class="table table-striped table-bordered text-center">
+						<tr>
+							<th>登记门店</th>
+							<th>厂商编码</th>
+							<th>厂商名称</th>
+							<th>商品编码</th>
+							<th>商品名称</th>
+							<th>商品品牌</th>
+							<th>数量单位</th>
+							<th>重量</th>
+							<th>进货价</th>
+							<th>商品状态</th>
+							<th>商品Vip价</th>
+							<th>商品图片</th>
+							<th>操作</th>
+						</tr>
+						<tr v-for="(item,i) in page.list">
+							<td style="vertical-align: middle">{{item.storeid.storenames}}</td>
+							<td style="vertical-align: middle">{{item.firmno.firmno}}</td>
+							<td style="vertical-align: middle">{{item.firmno.firmname}}</td>
+							<td style="vertical-align: middle">{{item.shopid}}</td>
+							<td style="vertical-align: middle">{{item.shopname}}</td>
+							<td style="vertical-align: middle">{{item.sbrand}}</td>
+							<td style="vertical-align: middle">{{item.unitid.unitname}}</td>
+							<td style="vertical-align: middle">{{item.weight}}</td>
+							<td style="vertical-align: middle">{{item.stockprice}}</td>
+							<td style="vertical-align: middle">{{item.stateid.statename}}</td>
+							<td style="vertical-align: middle">{{item.vipmoney}}</td>
+							<td v-if="item.pictrueurl!=''" style="vertical-align: middle">
+								<img :src="item.pictrueurl" style="width: 200px;height: 100px;">
+							</td>
+							<td v-if="item.pictrueurl==''" style="vertical-align: middle">
+								暂未上传图片
+							</td>
+							<td style="vertical-align: middle"><input type="checkbox" class="checkBtn" name="selOne1" :no="item.shopid"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		<!--新增商品模态框-->
+			<div class="modal fade" id="insert" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document" style="width: 1100px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="myModalLabel">增加商品资料</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-inline">
+								<div class="row" style="margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="spbm">登记门店</span>
+										<select class="form-control" v-model="shopInfo.storeid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in store">
+												<option :value="temp.storeid">{{temp.storenames}}</option>
+											</template>
+										</select>
+									</div>
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="spmc">厂商编码</span>
+										<select class="form-control" v-model="shopInfo.firmno">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in firm">
+												<option :value="temp.firmno">{{temp.firmno}}</option>
+											</template>
+										</select>
+									</div>
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sppp">商品品牌</span>
+										<select class="form-control" v-model="shopInfo.sbrand">
+											<option value="0">请选择</option>
+											<option value="1">别克</option>
+											<option value="2">米其林</option>
+										</select>
+									</div>
+								</div>
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sycx">商品编码</span>
+										<input type="text" class="form-control" v-model="shopInfo.shopid" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="spdl">商品名称</span>
+										<input type="text" class="form-control" v-model="shopInfo.shopname" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sppp">商品类型</span>
+										<select class="form-control" v-model="shopInfo.gid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in goodstype">
+												<option :value="temp.gid">{{temp.gname}}</option>
+											</template>
+										</select>
+									</div>
+								</div>
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sldw">数量单位</span>
+										<select class="form-control" v-model="shopInfo.unitid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in unit">
+												<option :value="temp.unitid">{{temp.unitname}}</option>
+											</template>
+
+										</select>
+									</div>
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="csbm">重量</span>
+										<input type="text" class="form-control" v-model="shopInfo.weight" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="txm">商品状态</span>
+										<select class="form-control" v-model="shopInfo.stateid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in state">
+												<option :value="temp.stateid">{{temp.statename}}</option>
+											</template>
+
+										</select>
+									</div>
+								</div>
+										
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="csmc">进货价</span>
+										<input type="text" class="form-control" v-model="shopInfo.stockprice" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt1">商品vip价</span>
+										<input type="text" class="form-control" v-model="shopInfo.vipmoney" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt2">商品图片</span>
+										<input type="file" name="img" @change="addImg" class="form-control" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt2">图片预览</span>
+										<img :src="shopInfo.pictrueurl" v-if="shopInfo.pictrueurl!=''" />
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" @click="clearVal" class="btn btn-default" data-dismiss="modal">关闭</button>
+							<button type="button" @click="addShop()" class="btn btn-primary">提交</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		<!--修改商品模态框-->
+			<div class="modal fade" id="update" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document" style="width: 1100px;">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title" id="myModalLabel">编辑商品资料</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-inline">
+								<div class="row" style="margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="spbm">登记门店</span>
+										<select class="form-control" v-model="shopInfo.storeid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in store">
+												<option :value="temp.storeid">{{temp.storenames}}</option>
+											</template>
+
+										</select>
+									</div>
+
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="spmc">厂商编码</span>
+										<select class="form-control" v-model="shopInfo.firmno">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in firm">
+												<option :value="temp.firmno">{{temp.firmno}}</option>
+											</template>
+
+										</select>
+									</div>
+
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sppp">商品品牌</span>
+										<select class="form-control" v-model="shopInfo.sbrand">
+											<option value="0">请选择</option>
+											<option value="1">别克</option>
+											<option value="2">米其林</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sycx">商品编码</span>
+										<input type="text" class="form-control" v-model="shopInfo.shopid" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-5">
+										<span class="input-group-addon" id="spdl">商品名称</span>
+										<input type="text" class="form-control" v-model="shopInfo.shopname" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sppp">商品类型</span>
+										<select class="form-control" v-model="shopInfo.gid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in goodstype">
+												<option :value="temp.gid">{{temp.gname}}</option>
+											</template>
+										</select>
+									</div>
+								</div>
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="sldw">数量单位</span>
+										<select class="form-control" v-model="shopInfo.unitid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in unit">
+												<option :value="temp.unitid">{{temp.unitname}}</option>
+											</template>
+										</select>
+									</div>
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="csbm">重量</span>
+										<input type="text" class="form-control" v-model="shopInfo.weight" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="txm">商品状态</span>
+										<select class="form-control" v-model="shopInfo.stateid">
+											<option value="0">请选择</option>
+											<template v-for="(temp,i) in state">
+												<option :value="temp.stateid">{{temp.statename}}</option>
+											</template>
+
+										</select>
+									</div>
+
+								</div>
+
+								<div class="row" style="margin-top: 10px;margin-left: 5px;">
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="csmc">进货价</span>
+										<input type="text" class="form-control" v-model="shopInfo.stockprice" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt1">商品vip价</span>
+										<input type="text" class="form-control" v-model="shopInfo.vipmoney" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt2">商品图片</span>
+										<input type="file" name="img" @change="addImg2" class="form-control" placeholder="" aria-describedby="sizing-addon3">
+									</div>
+									<div class="input-group input-group-sm col-md-3">
+										<span class="input-group-addon" id="iqt2">图片预览</span>
+										<img :src="shopInfo.pictrueurl" v-if="shopInfo.pictrueurl!=''" />
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" @click="clearVal" class="btn btn-default" data-dismiss="modal">关闭</button>
+							<button type="button" @click="updateShop" class="btn btn-primary">提交</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript" src="../../js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="../../js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="../../js/bootstrap-datetimepicker.zh-CN.js"></script>
+	<script type="text/javascript">
+		var shop = new Vue({
+			el: "#shop",
+			data: {
+				page: [],
+				option: "",
+				store: [],
+				firm: [],
+				state: [],
+				goodstype: [],
+				unit: [],
+				shopInfo: {
+					shopid: "",
+					firmno: "",
+					stateid: "",
+					storeid: "",
+					unitid: "",
+					gid: "",
+					shopname: "",
+					sbrand: "",
+					weight: "",
+					pictrueurl: "",
+					stockprice: "",
+					vipmoney: "",
+				},
+			},
+			methods: {
+				modifyState(stateid) {
+					let nos=[];
+					let checks = $("[name=selOne1]");
+					let _this = this;
+					for (var i = 0; i < checks.length; i++) {
+						if (checks.eq(i).prop("checked")) {
+							nos.push(checks.eq(i).attr("no"));
+							checks.eq(i).prop("checked",false);
+						}
+					}
+					if(nos.length==0){
+						if(stateid==8){
+							alert("请先选择要下架商品");
+						}else{
+							alert("请先选择要上架商品");
+						}
+						return;
+					}
+					if (confirm("确认下架吗？")) {
+						jQuery.ajax(`http://127.0.0.1:8080/api/shops/shop/modifyState/${stateid}`, {
+							type: 'post',
+							data: JSON.stringify(nos),
+							contentType: "application/json",
+							success(data) {
+								if (data.code == "200") {
+									alert('下架成功');
+								}
+								_this.getPage(_this.page.pageNum);
+							}
+						});
+					}
+				},
+				modifyShop() {
+					let id = "";
+					let checks = $("[name=selOne1]");
+					let _this = this;
+					let num = 0;
+					for (var i = 0; i < checks.length; i++) {
+						if (checks.eq(i).prop("checked")) {
+							num++;
+							id = checks.eq(i).attr("no");
+							checks.eq(i).prop("checked", false);
+						}
+					}
+					if (num == 0) {
+						alert("请选择要修改的商品信息");
+						return;
+					} else if (num > 1) {
+						alert("一次只能修改一个商品信息");
+						return;
+					} else {
+						jQuery.getJSON(`http://127.0.0.1:8080/api/shops/shop/${id}`, function(pg) {
+							_this.shopInfo = pg;
+						});
+						$("#update").modal("show");
+					}
+				},
+				updateShop() {
+					let _this = this;
+					jQuery.ajax(`http://127.0.0.1:8080/api/shops/shop/modify`, {
+						type: 'post',
+						data: JSON.stringify(_this.shopInfo),
+						contentType: "application/json",
+						success(data) {
+							if (data.code == "200") {
+								alert('修改成功');
+								$("#update").modal("hide");
+								for (x in _this.shopInfo) {
+									_this.shopInfo[x] = "";
+								}
+								_this.getPage(_this.page.pageNum);
+							}
+						}
+					});
+				},
+				addImg() {
+					let files = $("[name=img]")[0].files[0];
+					let _this = this;
+					let reader = new FileReader();
+					reader.onloadend = function() {
+						_this.shopInfo.pictrueurl = reader.result;
+						console.log(reader.result);
+					}
+					if (files) {
+						reader.readAsDataURL(files);
+					}
+				},
+				addImg2() {
+					let files = $("[name=img]")[1].files[0];
+					let _this = this;
+					let reader = new FileReader();
+					reader.onloadend = function() {
+						_this.shopInfo.pictrueurl = reader.result;
+						console.log(reader.result);
+					}
+					if (files) {
+						reader.readAsDataURL(files);
+					}
+				},
+				addShop() {
+					for (x in this.shopInfo) {
+						if (!this.shopInfo[x]) {
+							alert(x + "内容不允许为空");
+							return;
+						}
+					}
+					let _this = this;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/shops/shop/${_this.shopInfo.shopid}`, function(pg) {
+						if (pg.length==0) {
+							_this.addShopTrue();
+						} else {
+							alert("此商品编号已存在");
+						}
+					});
+					
+					
+				},
+				addShopTrue(){
+					let _this = this;
+					jQuery.ajax(`http://127.0.0.1:8080/api/shops/shop/add`, {
+						type: 'post',
+						data: JSON.stringify(_this.shopInfo),
+						contentType: "application/json",
+						success(data) {
+							if (data.code == "200") {
+								alert('新增成功');
+								for (x in _this.shopInfo) {
+									_this.shopInfo[x] = "";
+								}
+								$("#insert").modal("hide");
+								_this.getPage(1);
+							}
+						}
+					});
+				},
+				getSelect() {
+					let _this = this;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/shops/store`, function(pg) {
+						_this.store = pg;
+					});
+					jQuery.getJSON(`http://127.0.0.1:8080/api/shops/firm`, function(pg) {
+						_this.firm = pg;
+					});
+					jQuery.getJSON(`http://127.0.0.1:8080/api/shops/state`, function(pg) {
+						_this.state = pg;
+					});
+					jQuery.getJSON(`http://127.0.0.1:8080/api/shops/goodstype`, function(pg) {
+						_this.goodstype = pg;
+					});
+					jQuery.getJSON(`http://127.0.0.1:8080/api/shops/unit`, function(pg) {
+						_this.unit = pg;
+					});
+				},
+				getPage(num) {
+					let _this = this;
+					let name = null;
+					if (this.option != "") {
+						name = this.option;
+					}
+					jQuery.getJSON(`http://127.0.0.1:8080/api/shops/${num}/${name}`, function(pg) {
+						_this.page = pg;
+					});
+
+				},
+				firstPage() {
+					if (this.page.pageNum == 1) {
+						alert("已经是首页了");
+						return;
+					}
+					this.getPage(1);
+				},
+				prePage() {
+					this.getPage(this.page.prePage);
+				},
+				nextPage() {
+					this.getPage(this.page.nextPage);
+				},
+				lastPage() {
+					if (this.page.pageNum == this.page.pages) {
+						alert("已经是尾页了");
+						return;
+					}
+					this.getPage(this.page.pages);
+				},
+				clearVal(){
+					for (x in this.shopInfo) {
+						this.shopInfo[x] = "";
+					}
+				}
+			},
+			mounted() {
+				this.getPage(1);
+				this.getSelect();
+			}
+		})
+
+
+		$(".time").datetimepicker({
+			language: "zh-CN",
+			format: "yyyy-mm-dd", //显示格式  需要時分秒就加上 hh:ii:ss
+			minView: "month", //设置只显示到月份
+			initialDate: new Date(), //初始化当前日期
+			autoclose: true, //选中自动关闭
+			todayBtn: true, //显示今日按钮
+			clearBtn: true,
+			pickerPosition: "bottom-left"
+		});
+	</script>
+</html>

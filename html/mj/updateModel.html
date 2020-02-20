@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css" />
+	<style type="text/css">
+		body {
+			margin: 0 auto;
+			padding-top: 30px;
+			background: #F5F5F5;
+			width: 300px;
+		}
+
+		.form-control {
+			display: inline-block;
+			width: 220px;
+		}
+
+		.btn {
+			margin-left: 20px;
+		}
+	</style>
+
+	<body>
+		<div id="type">
+			<div class="form-group">
+				<label for="inputEmail3" class="form-group" style="display: inline-block;"><span style="color: red;">*</span>车型编号</label>
+				<div style="display: inline-block;">
+					<input type="text" v-model="Model.cartypeid" disabled="disabled" class="form-control" placeholder="车型编号">
+				</div>			
+			</div>
+			<div class="form-group">
+				<label for="inputPassword3" style="display: inline-block;" class="form-group"><span style="color: red;">*</span>车型名称</label>
+				<div style="display: inline-block;">
+					<input type="text" v-model="Model.cartypename"  class="form-control" placeholder="车型名称">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="inputPassword3" style="display: inline-block;" class="form-group"><span style="color: red;">*</span>参考价格</label>
+				<div style="display: inline-block;">
+					<input type="text" v-model="Model.ckprice"  class="form-control" placeholder="参考价格">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="inputPassword3" style="display: inline-block;" class="form-group"><span style="color: red;">*</span>车辆品牌</label>
+				<div style="display: inline-block;">
+					<select class="form-control" v-model="Model.ctsid">
+						<option value="0" selected="selected">请选择</option>
+						<option v-for="(temp,i) in cartype" :value="temp.ctsid">{{temp.ctsnames}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="inputPassword3" style="display: inline-block;" class="form-group"><span style="color: red;">*</span>发动机品牌</label>
+				<div style="display: inline-block;">
+					<select class="form-control" v-model="Model.engineid">
+						<option value="0" selected="selected">请选择</option>
+						<option v-for="(temp,i) in engine" :value="temp.engineid">{{temp.enginename}}</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<button type="submit" style="margin-left: 130px;" class="btn btn-default" @click="yzType()">保存</button>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/jquery-1.12.4.js" type="text/javascript"></script>
+	<script src="../../js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../js/jq_ajax_config.js" type="text/javascript"></script>
+	<script type="text/javascript" src="../../js/vue.js"></script>
+	<script type="text/javascript">
+		var type=new Vue({
+			el:"#type",
+			data:{
+				Model:{
+					cartypeid:"",
+					engineid:"",
+					ctsid:"",
+					cartypename:"",
+					ckprice:"",
+				},
+				cartype:[],
+				engine:[],
+				modelId:"",
+			},
+			methods:{
+				getEegine() {
+					let _this=this;
+					let name = null;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/engines/${name}`, function(pg) {
+						_this.engine = pg;
+					});
+				},
+				getType(){
+					let _this=this;
+					let name = null;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/cars/types/${name}`, function(pg) {
+						_this.cartype = pg;
+					});
+				},
+				getModel(){
+					let _this=this;
+					let name = null;
+					jQuery.getJSON(`http://127.0.0.1:8080/api/models/cars/car/${_this.modelId}`, function(pg) {
+						_this.Model = pg;
+					});
+				},
+				yzType(){
+					let _this = this;
+					if(this.Model.cartypeid=="" || this.Model.engineid=="0" || this.Model.ctsid=="0" || this.Model.cartypename=="" || this.Model.ckprice=="" ){
+						alert("内容不允许为空");
+						return;
+					}else{
+						jQuery.getJSON(`http://127.0.0.1:8080/api/models/cars/${_this.Model.cartypename}`, function(pg) {
+							if (pg.length == 0) {
+								_this.modifyModel();
+							} else {
+								if(confirm("此品牌名称已存在，确定继续修改吗")){
+									_this.modifyModel();
+								}
+							}
+						});
+					}
+				},
+				modifyModel(){
+					let _this = this;
+					jQuery.ajax(`http://127.0.0.1:8080/api/models/model/modify`, {
+						type: 'post',
+						data:JSON.stringify(_this.Model),
+						contentType: "application/json",
+						success(data) {
+							if (data.code == "200") {
+								alert('修改成功');
+								parent.car.getModel();//调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+								var index=parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+								parent.layer.close(index);
+							}
+						}
+					});
+				}
+			},
+			mounted(){
+				this.getEegine();
+				this.getType();
+				this.modelId=window.sessionStorage.getItem("modelId");
+				this.getModel();
+			}
+		})
+	</script>
+</html>

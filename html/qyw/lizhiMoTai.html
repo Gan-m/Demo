@@ -108,8 +108,8 @@
 							dataType: "json",
 							contentType: "application/json", //非常重要
 							data: JSON.stringify(this.dims), //提交json数组
-							success: function(te) {
-								if(te.code == '200') {
+							success: function(st) {
+								if(st.code == '200') {
 									alert("保存成功！");
 									parent.dimList.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
 									var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name

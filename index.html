@@ -38,7 +38,7 @@
 							<label>
 						<i class="layui-icon">&#xe770;</i>&nbsp;
 						<img  src="images/222.gif" class="layui-circle" width="40" height="40" style="border-radius: 40px;" />&nbsp;
-						<b>{{employee.empname}}<i class="layui-icon">&#xe62e;</i></b>
+						<b>{{employee.empname}}<i class="layui-icon">&#xe62e;</i>{{pname}}</b>
 						</label>
 					</li>
 					<li class="layui-nav-item" @click="changeLeft(1)">
@@ -78,6 +78,9 @@
 						<label><i class="layui-icon">&#xe716;</i> 操作</label>
 						<dl class="layui-nav-child navc" id="nac1">
 							<dd ty="self">个人中心</dd>
+							<template v-if="employee.empname=='as'">
+							<dd ty="qx" >权限</dd>
+							</template>
 							<dd ty="pwd">修改密码</dd>
 							<dd ty="logout">注销</dd>
 						</dl>
@@ -96,7 +99,9 @@
 							<li class="layui-nav-item navItem">
 								<a href="index.html" class="navItem_a"><i class="layui-icon">&#xe628;</i>首页</a>
 							</li>
+							
 							<li class="layui-nav-item navItem" v-for="(temp,index) in leftNavs">
+								
 								<a href="javascript:;" class="navItem_a"><i class="layui-icon">&#xe628;</i>{{temp.text}}</a>
 								<dl class="layui-nav-child navItem_dl">
 									<dd v-for="(t,index) in temp.dson" @click="myclick($event)">
@@ -107,9 +112,9 @@
 											<input type="hidden" class="leftNav_name" :value="t.name" /> {{t.name}}
 										</a>
 									</dd>
-
 								</dl>
 							</li>
+							
 						</ul>
 					</div>
 				</div>
@@ -121,7 +126,7 @@
 						</ul>
 						<div class="layui-tab-content" style="background: #f5f5f5;">
 							<div class="layui-tab-item layui-show">
-								<iframe frameborder="0" src="html/welcome.html" width="100%" height="580" id="iframe"></iframe>
+								<iframe frameborder="0" src="html/welcome.html" width="100%" height="630" id="iframe"></iframe>
 							</div>
 						</div>
 					</div>
@@ -204,6 +209,8 @@
 														}
 									})
 							}
+						}else if(ty=="qx"){
+							$("#iframe").attr('src','html/qhuanx.html');
 						}
 					})
 				})
@@ -269,13 +276,23 @@
 			var vm = new Vue({
 				el: "#sec",
 				data: {
+					pname:"",
 					leftNavs: [],
 					colors: [],
-					employee:{}
+					employee:{},
+					tree:{}
 				},mounted:function(){
 					let sthis=this;
 					jQuery.getJSON("http://127.0.0.1:8080/api/employee/getsession",function(da){
 						sthis.employee=da;
+						if(da.empname=='as'){
+							sthis.pname="超级管理员";
+						}else{
+							sthis.pname=da.dep.depnames;
+						}
+					})
+					jQuery.getJSON("http://127.0.0.1:8080/api/employee/getFunTree",function(ds){
+						sthis.tree=ds;
 					})
 				},
 				methods: {
@@ -292,12 +309,55 @@
 							this.leftNavs = convert(leftNav5);
 						}
 						
+						if(this.employee.empname!="as"){
+						//大菜单
+						let fusy=[];
+						for(let k=0;k<=this.tree.length-1;k++){
+							for(let j=this.leftNavs.length-1;j>=0;j--){
+								if(this.leftNavs[j].text==this.tree[k].text){
+									fusy.push(this.leftNavs[j]);
+								}
+								};
+						}
+						this.leftNavs="";
+						this.leftNavs=fusy;
+						
+						//小菜单
+						
+						for(let k=0;k<=this.tree.length-1;k++){
+							for(let j=this.leftNavs.length-1;j>=0;j--){
+								if(this.leftNavs[j].text==this.tree[k].text){
+								if(this.tree[k].children!=""){
+									let dosy=[];
+									for(let l=0;l<this.tree[k].children.length;l++){
+										for(let p=this.leftNavs[j].dson.length-1;p>=0;p--){
+											//alert( this.leftNavs[j].dson[p].name +"  0 "+ this.tree[k].children[l].text+""+(this.leftNavs[j].dson[p].name==this.tree[k].children[l].text));
+											if(this.leftNavs[j].dson[p].name==this.tree[k].children[l].text){
+												dosy.push(this.leftNavs[j].dson[p]);
+										}
+									}
+								}
+								this.leftNavs[j].dson="";
+								this.leftNavs[j].dson=dosy;
+								}else{
+									this.leftNavs[j].dson="";
+								}
+								}
+							}
+						}
+						
+						 if(this.leftNavs==""){
+							this.leftNavs = [{text:"",dson:[]},{text:"",dson:[]}];
+						}else if(this.leftNavs.length==1){
+							this.leftNavs.push({text:"",dson:[]});
+						} 
+																		
+						}
 					},
 					myclick: function(e) {
 						var tp = $(e.target).find(".leftNav_href").val();
 						var pd = true;
 						var tid = $(e.target).find(".leftNav_id").val();
-			
 						$("#layuiTab").children().each(function() {
 							$(this).removeClass("layui-this");
 						})
@@ -333,8 +393,8 @@
 					}
 				},
 				created: function() {
-					//菜单数据源   menuJson.js
-					this.leftNavs = convert(leftNav1);
+					//菜单数据源   menuJson.js  
+					this.leftNavs = [{text:"",dson:[]},{text:"",dson:[]}]
 					//颜色数据源   colorCss.js
 					this.colors = colors;
 				}
