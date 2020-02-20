@@ -78,13 +78,21 @@
 											</tr>
 											<tr>
 												<td class="table-label">
-													<font class="red">*</font>所在部门</td>
-												<!-- 表单被禁用 disabled or readonly -->
+													<font class="red">*</font>部门</td>
 												<td class="table-info-left">
-													<select v-model="emp.departmentid" name="bm" style="width:100px;">
+													<select @change="bmClick()" name="bm" style="width:100px;">
+														<option v-for="(te,i) in bm" :value="te.departmentid">{{te.depnames}}</option>
+													</select>
+												</td>
+												<td class="table-label">
+													<font class="red">*</font>职位</td>
+												<td class="table-info-left">
+													<select v-model="emp.departmentid" name="dep" style="width:100px;">
 														<option v-for="(te,i) in dep" :value="te.departmentid">{{te.depnames}}</option>
 													</select>
 												</td>
+											</tr>
+											<tr>
 												<td class="table-label">学历</td>
 												<td class="table-info-left">
 													<select v-model="emp.education" style="width:100px;">
@@ -95,8 +103,6 @@
 														<option value="博士">博士</option>
 													</select>
 												</td>
-											</tr>
-											<tr>
 												<td class="table-label">
 													</font>属性</td>
 												<td class="table-info-left">
@@ -104,60 +110,68 @@
 														<option v-for="(te,i) in pro" :value="te.propertyid">{{te.propertyname}}</option>
 													</select>
 												</td>
+												
+											</tr>
+											<tr>
 												<td class="table-label">
 													</font>毕业学校</td>
 												<td class="table-info-left">
 													<input name="" type="text" v-model="emp.graduationschool" />
 												</td>
-											</tr>
-											<tr>
 												<td class="table-label">
 													</font>专业</td>
 												<td class="table-info-left">
 													<input name="" type="text" v-model="emp.major" />
 												</td>
+												
+											</tr>
+											<tr>
 												<td class="table-label">
 													</font>身份证号码</td>
 												<td class="table-info-left">
 													<input name="" type="text" v-model="emp.crrdid" />
 												</td>
-											</tr>
-											<tr>
 												<td class="table-label">
 													</font>户口地址</td>
 												<td class="table-info-left">
 													<input name="" type="text" v-model="emp.address" />
 												</td>
+												
+											</tr>
+											<tr>
 												<td class="table-label">现居住地址</td>
 												<td class="table-info-left">
 													<input type="text" v-model="emp.newaddress" />
 												</td>
-											</tr>
-											<tr>
 												<td class="table-label">员工联系电话</td>
 												<td class="table-info-left">
 													<input type="text" v-model="emp.empphone" />
 												</td>
+												
+											</tr>
+											<tr>
 												<td class="table-label">紧急联系电话</td>
 												<td class="table-info-left">
 													<input type="text" v-model="emp.emergencyphone" />
 												</td>
-											</tr>
-											<tr>
 												<td class="table-label">Email</td>
 												<td class="table-info-left">
 													<input type="text" v-model="emp.email" />
 												</td>
+												
+											</tr>
+											<tr>
 												<td class="table-label">出生日期</td>
 												<td class="table-info-left">
 													<input type="date" v-model="emp.brithtimes" />
 												</td>
-											</tr>
-											<tr>
 												<td class="table-label">入职时间</td>
 												<td class="table-info-left">
 													<input type="date" v-model="emp.entrytimes" />
 												</td>
+												
+											</tr>
+											<tr>
 												<td class="table-label">员工离职时间</td>
 												<td class="table-info-left">
 													<input type="date" v-model="emp.lztimes" />
@@ -192,6 +206,7 @@
 				dep: [],
 				pro: [],
 				sto: [],
+				bm:[],
 				employee: {
 					storeid: "1001"
 				},
@@ -222,8 +237,8 @@
 			},
 			created: function() {
 				let _this = this;
-				jQuery.getJSON(`http://127.0.0.1:8080/api/dep/deps`, function(data) {
-					_this.dep = data;
+				jQuery.getJSON("http://127.0.0.1:8080/api/dep/depBm",function(da){
+					_this.bm=da;
 				});
 				jQuery.getJSON(`http://127.0.0.1:8080/api/pro/pros`, function(data) {
 					_this.pro = data;
@@ -236,6 +251,13 @@
 				});
 			},
 			methods: {
+				bmClick(){
+					let _this = this;
+					var bmId=$("[name=bm]").val();
+					jQuery.getJSON(`http://127.0.0.1:8080/api/dep/deps`,{"bmId":bmId}, function(te) {
+						_this.dep = te;
+					});
+				},
 				add() {
 					if(this.emp.employeeid != "" && this.emp.empname != "" && this.emp.esex != "" && this.emp.emplogenid != "" && this.emp.emplogepaw != "" && this.emp.departmentid) {
 						jQuery.ajax({

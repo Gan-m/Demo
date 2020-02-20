@@ -40,7 +40,7 @@
 													<font class="red">*</font>员工姓名</td>
 												<!-- 表单被禁用 disabled or readonly -->
 												<td class="table-info-left">
-													<select name="empname" v-model="dim.employeeid">
+													<select name="empname" v-model="dims.employeeid">
 														<template v-for="(te,i) in emp">
 															<option :value="te.employeeid">{{te.empname}}</option>
 														</template>
@@ -49,14 +49,14 @@
 												<td class="table-label">
 													<font class="red">*</font>离职时间</td>
 												<td class="table-info-left">
-													<input type="date" name="lizhishijian" v-model="dim.dimtimes"/>
+													<input type="date" name="lizhishijian" v-model="dims.dimtimes"/>
 												</td>
 											</tr>
 											<tr>
 												<td class="table-label">
 													离职原因</td>
 												<td class="table-info-left" colspan="4">
-													<textarea style="width: 200px;" v-model="dim.dimreasona"></textarea>
+													<textarea style="width: 200px;" v-model="dims.dimreasona"></textarea>
 												</td>
 											</tr>
 										</tbody>
@@ -85,7 +85,7 @@
 			el: "#dimAdd",
 			data: {
 				emp: {},
-				dim:{
+				dims:{
 					dimissionid:"",
 					employeeid:"",
 					departmentid:"",
@@ -101,17 +101,17 @@
 			},
 			methods: {
 				add() {
-					if(this.dim.employeeid != "" && this.dim.dimtimes != "") {
+					if(this.dims.employeeid != "" && this.dims.dimtimes != "") {
 						jQuery.ajax({
 							url: "http://127.0.0.1:8080/api/dim/add",
 							type: "post",
 							dataType: "json",
 							contentType: "application/json", //非常重要
-							data: JSON.stringify(this.dim), //提交json数组
+							data: JSON.stringify(this.dims), //提交json数组
 							success: function(te) {
 								if(te.code == '200') {
 									alert("保存成功！");
-									parent.dim.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+									parent.dimList.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
 									var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
 									parent.layer.close(index);
 								} else {
@@ -124,7 +124,7 @@
 					};
 				},
 				gb() {
-					parent.dim.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
+					parent.dimList.show(1, 2); //调用父亲vue里面的方法  car就是函数名 var car=new Vue({})
 					var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
 					parent.layer.close(index);
 				}

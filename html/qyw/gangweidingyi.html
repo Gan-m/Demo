@@ -13,7 +13,7 @@
 	<body style="background:#f5f5f5;">
 		<div class="container-fluid" id="gw">
 			<div class="row">
-				<div class="col-sm-7">
+				<div class="col-sm-8">
 					<h2 class="form-group" style="float: left;">岗位定义</h2>		
 					<form class="form-inline" style="margin-top: 20px;float: right;">
 						<div class="form-group" >
@@ -24,9 +24,18 @@
 							<label for="exampleInputEmail2" style="font-weight: normal;font-size: 12px;">岗位名称：</label>
 							<input type="email" v-model="upd.depnames" class="form-control" id="exampleInputEmail2" placeholder="岗位名称">
 						</div>
+						<div class="form-group">
+							<label for="exampleInputEmail2" style="font-weight: normal;font-size: 12px;">部门名称：</label>
+							<select name="bmSelect">
+								<option :value="-1">全部</option>
+								<template v-for="(te,i) in bm">
+									<option :value="te.departmentid">{{te.depnames}}</option>
+								</template>
+							</select>
+						</div>
 					</form>
 				</div>
-				<div class="col-sm-5">
+				<div class="col-sm-4">
 					<div class="form-group" style="float: left;margin-top: 20px;">
 						<button type="button" class="btn btn-default cz-btn" @click="add"><span class="glyphicon glyphicon-plus"></span>&nbsp;增加</button>
 						<button type="button" class="btn btn-default cz-btn" @click="del"><span class="glyphicon glyphicon-remove"></span>&nbsp;删除</button>
@@ -91,10 +100,15 @@
 				upd:{
 					departmentid:"",
 					depnames:"",
-					depfaid:"57",
-				}
+					depfaid:"",
+				},
+				bm:[]
 			},
 			created:function(){
+				let _this=this;
+				jQuery.getJSON("http://127.0.0.1:8080/api/dep/depBm",function(da){
+					_this.bm=da;
+				});
 				this.show(1,6);
 			},
 			methods:{
@@ -112,7 +126,7 @@
 				},
 				show(p,s){
 					let _this=this;
-					jQuery.getJSON(`http://127.0.0.1:8080/api/dep/depPage`,{"p":p,"s":s},function(da){
+					jQuery.getJSON(`http://127.0.0.1:8080/api/dep/depPage`,{"p":p,"s":s,"bmId":0},function(da){
 						_this.deps=da;
 					});
 				},
@@ -124,12 +138,14 @@
 				},
 				bc(){
 					let _this=this;
+					_this.upd.depfaid=$("[name=bmSelect]").val();
+					alert(JSON.stringify(_this.upd.depfaid))
 					jQuery.ajax({
 						url: "http://127.0.0.1:8080/api/dep/upd",
 						type: "put",
 						dataType: "json",
 						contentType: "application/json", //非常重要
-						data: JSON.stringify(this.upd), //提交json数组
+						data: JSON.stringify(_this.upd), //提交json数组
 						success: function(te) {
 							if(te.code == '200') {
 								alert("修改成功！");
@@ -142,27 +158,32 @@
 				},
 				add(){
 					let _this=this;
-					/*jQuery.getJSON(`http://127.0.0.1:8080/api/dep/depCha`,{"bh":this.upd.departmentid},function(da){
-						if(da!=null){
-							alert("该编号已有！！！");
-						}else{*/
-							jQuery.ajax({
-								url: "http://127.0.0.1:8080/api/dep/add",
-								type: "post",
-								dataType: "json",
-								contentType: "application/json", //非常重要
-								data: JSON.stringify(this.upd), //提交json数组
-								success: function(te) {
-									if(te.code == '200') {
-										alert("保存成功！");
-										_this.show(1,6);
-									} else {
-										alert("保存失败！");
+					_this.upd.depfaid=$("[name=bmSelect]").val();
+					if(this.upd.departmentid!=""&&this.upd.depnames!=""&&this.upd.depfaid!=-1){
+						jQuery.getJSON("http://127.0.0.1:8080/api/dep/dan",{"departmentid":_this.upd.departmentid},function(da){
+							if(da.code=="200"){
+								alert("该编号已有！！！");
+							}else{
+								jQuery.ajax({
+									url: "http://127.0.0.1:8080/api/dep/add",
+									type: "post",
+									dataType: "json",
+									contentType: "application/json", //非常重要
+									data: JSON.stringify(_this.upd), //提交json数组
+									success: function(te) {
+										if(te.code == '200') {
+											alert("保存成功！");
+											_this.show(1,6);
+										} else {
+											alert("保存失败！");
+										}
 									}
-								}
-							});
-						/*}
-					});*/
+								});
+							}
+						});
+					}else{
+						alert("文本框或部门不能为空！！！");
+					}
 				},
 				del(){
 					let _this=this;
@@ -177,17 +198,30 @@
 					if(j != null) {
 						let tis=this;
 						$.ajax({
-							url: "http://127.0.0.1:8080/api/dep/del",
+							url: "http://127.0.0.1:8080/api/dep/depAndEmpAndDim",
 							type: "post",
 							dataType: "json",
 							contentType: "application/json", //非常重要
 							data: JSON.stringify(j), //提交json数组
-							success: function(da) {
-								if(da.code == '200') {
-									alert("删除成功！");
-									_this.show(1,6);
+							success: function(te) {
+								if(te.code == '200') {
+									alert("该职位正在被使用！！！");
 								} else {
-									alert("删除失败！");
+									$.ajax({
+										url: "http://127.0.0.1:8080/api/dep/del",
+										type: "post",
+										dataType: "json",
+										contentType: "application/json", //非常重要
+										data: JSON.stringify(j), //提交json数组
+										success: function(da) {
+											if(da.code == '200') {
+												alert("删除成功！");
+												_this.show(1,6);
+											} else {
+												alert("删除失败！");
+											}
+										}
+									})
 								}
 							}
 						})
